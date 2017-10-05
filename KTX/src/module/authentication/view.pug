@@ -1,0 +1,51 @@
+doctype html
+html
+    head
+        meta(charset='UTF-8')
+        meta(content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no', name='viewport')
+        title= pageTitle
+        // Google Fonts
+        link(href='https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext', rel='stylesheet', type='text/css')
+        link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet', type='text/css')
+
+        // Plugins - CSS
+        link(href='/plugins/bootstrap/css/bootstrap.css', rel='stylesheet')
+        link(href='/plugins/node-waves/waves.css', rel='stylesheet')
+        link(href='/plugins/animate-css/animate.css', rel='stylesheet')
+        link(href='/css/lib/dashboard/style.css?v=1.0.2', rel='stylesheet')
+    body.login-page
+        .login-box
+            .logo
+                a(href='javascript:void(0);')
+                    | CSE
+                    b Youth
+                small Cổng xác thực website Đoàn TN - Hội SV Khoa KH&KT Máy tính
+            .card
+                .body
+                    form#sign_in(action='login', method='POST')
+                        .msg
+                            if message.length > 0
+                                = message
+                            else
+                                | Đăng nhập để bắt đầu phiên làm việc
+                        .input-group
+                            span.input-group-addon
+                                i.material-icons person
+                            .form-line
+                                input.form-control(type='text', name='id', placeholder='Tên đăng nhập', required='', autofocus='')
+                        .input-group
+                            span.input-group-addon
+                                i.material-icons lock
+                            .form-line
+                                input.form-control(type='password', name='password', placeholder='Mật khẩu', required='')
+                        .row
+                            .col-xs-7.p-t-5
+                            .col-xs-5
+                                button.btn.btn-block.waves-effect.bg-red(type='submit') ĐĂNG NHẬP
+        script(src='/plugins/jquery/jquery.min.js')
+        script(src='/plugins/bootstrap/js/bootstrap.js')
+        script(src='/plugins/node-waves/waves.js')
+        script(src='/plugins/jquery-validation/jquery.validate.js')
+        script(src='/js/lib/dashboard/admin.js')
+        script(src='/js/lib/dashboard/pages/examples/sign-in.js')
+

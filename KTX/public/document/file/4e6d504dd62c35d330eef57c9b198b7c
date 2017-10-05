@@ -1,0 +1,31 @@
+{
+  "name": "CSE Youth",
+  "version": "2.0.0",
+  "description": "Website Đoàn TN - Hội SV Khoa Khoa học và Kỹ thuật Máy tính",
+  "main": "cseyouth.js",
+  "author": "Duy Tran",
+  "license": "BKAN Team",
+  "dependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-nodeunit": "^1.0.0",
+    "grunt-contrib-uglify": "^0.5.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "express": "^4.14.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "bcrypt-nodejs": "^0.0.3",
+    "connect-flash": "^0.1.1",
+    "expression-session": "^1.14.2",
+    "mongoose": "^4.6.5",
+    "socket.io": "^1.5.1",
+    "pug": "^2.0.0-beta6",
+    "compression": "^1.6.2",
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "serve-favicon": "^2.3.0",
+    "morgan": "^1.7.0",
+    "multer": "^1.2.0"
+  }
+}

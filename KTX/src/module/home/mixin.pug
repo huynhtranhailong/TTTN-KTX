@@ -1,0 +1,98 @@
+mixin categories(type, name,id, news)
+    -var articles = news.filter(x => x.categories == type && x.published == 1)
+    if articles.length != 0
+        .col-sm-6
+            .panel
+                .panel-heading= name
+                .panel-body
+                    if(articles[0].isHot == true)
+                        .breaking-news
+                            .quick-review
+                                -var indexTitle = articles[0].title.tonal.split(' ', 15).join(' ').length
+                                -var indexAbs = articles[0].abstract.split(' ', 25).join(' ').length
+                                a(href="/tin-tuc/" + articles[0].created.getTime() + "")
+                                    img.img-responsive(src='/document/image/cover/' + articles[0].cover + "" , width="100%")
+                                    if(articles[0].title.tonal.length > indexTitle)
+                                        .title= articles[0].title.tonal.substring(0, indexTitle) + "..."
+                                            span.createdDate= " (" + moment(articles[0].created).format("DD/MM/YYYY HH:mm") + ")"
+                                    else
+                                        .title= articles[0].title.tonal
+                                            span.createdDate= " (" + moment(articles[0].created).format("DD/MM/YYYY HH:mm") + ")"
+                            .short-content
+                                if(articles[0].abstract.length > indexAbs)
+                                    p= articles[0].abstract.substring(0, indexAbs) + "..."
+                                else
+                                    p= articles[0].abstract
+                        -var normalNews = articles.slice(1  ,4)
+                        each value in normalNews
+                            .regular-news
+                                -var indexTitle = value.title.tonal.split(' ', 20).join(' ').length
+                                i.fa.fa-caret-right
+                                if(value.title.tonal.length > indexTitle)
+                                    a.title(href="/tin-tuc/" + value.created.getTime() + "")
+                                        =  value.title.tonal.substring(0, indexTitle) + "..."
+                                        span.createdDate= " (" + moment(value.created).format("DD/MM/YYYY") + ")"
+                                else
+                                    a.title(href="/tin-tuc/" + value.created.getTime() + "")
+                                        =  value.title.tonal
+                                        span.createdDate= " (" + moment(value.created).format("DD/MM/YYYY") + ")"
+
+                        .more.pull-right
+                            a(href='/chuyenmuc/' + type) Xem thêm
+
+
+                    else
+                        .breaking-news
+                            .quick-review
+                                -var indexTitle = articles[0].title.tonal.split(' ', 15).join(' ').length
+                                -var indexAbs = articles[0].abstract.split(' ', 25).join(' ').length
+                                if(articles[0].url)
+                                    a(href=articles[0].url)
+                                        if(articles[0].title.tonal.length > indexTitle)
+                                            .title= articles[0].title.tonal.substring(0, indexTitle) + "..."
+                                            span.createdDate= " (" + moment(articles[0].created).format("DD/MM/YYYY HH:mm") + ")"
+                                        else
+                                            .title= articles[0].title.tonal
+                                            span.createdDate= " (" + moment(articles[0].created).format("DD/MM/YYYY HH:mm") + ")"
+                                else
+                                    a(href="/tin-tuc/" + articles[0].created.getTime() + "")
+                                        if(articles[0].title.tonal.length > indexTitle)
+                                            .title= articles[0].title.tonal.substring(0, indexTitle) + "..."
+                                            span.createdDate= " (" + moment(articles[0].created).format("DD/MM/YYYY HH:mm") + ")"
+                                        else
+                                            .title= articles[0].title.tonal
+                                            span.createdDate= " (" + moment(articles[0].created).format("DD/MM/YYYY HH:mm") + ")"
+
+                            .short-content
+                                if(articles[0].abstract.length > indexAbs)
+                                    p= articles[0].abstract.substring(0, indexAbs) + "..."
+                                else
+                                    p= articles[0].abstract
+                        -var normalNews = articles.slice(1  ,7)
+                        each value in normalNews
+                            .regular-news
+                                -var indexTitle = value.title.tonal.split(' ', 20).join(' ').length
+                                i.fa.fa-caret-right
+                                if(value.title.tonal.length > indexTitle)
+                                    if(value.url)
+                                        a.title(href=value.url)
+                                            =  value.title.tonal.substring(0, indexTitle) + "..."
+                                            span.createdDate= " (" + moment(value.created).format("DD/MM/YYYY") + ")"
+                                    else
+                                        a.title(href="/tin-tuc/" + value.created.getTime() + "")
+                                            =  value.title.tonal.substring(0, indexTitle) + "..."
+                                            span.createdDate= " (" + moment(value.created).format("DD/MM/YYYY") + ")"
+                                else
+                                    if(value.url)
+                                        a.title(href=value.url)
+                                            =  value.title.tonal
+                                            span.createdDate= " (" + moment(value.created).format("DD/MM/YYYY") + ")"
+                                    else
+                                        a.title(href="/tin-tuc/" + value.created.getTime() + "")
+                                            =  value.title.tonal
+                                            span.createdDate= " (" + moment(value.created).format("DD/MM/YYYY") + ")"
+
+
+                        .more.pull-right
+                            a(href='/chuyen-muc/' + id) Xem thêm
+

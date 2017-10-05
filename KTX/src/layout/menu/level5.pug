@@ -1,0 +1,96 @@
+li
+    a(href='/dashboard')
+        i.material-icons home
+        span Trang chủ
+li.header CÁC CHỨC NĂNG QUẢN LÝ
+li
+    a(href='/dang-ky-luu-tru')
+        i.material-icons supervisor_account
+        span Đăng kí lưu trú
+li
+    a(href='/admin/setup')
+        i.material-icons supervisor_account
+        span Cài đặt hệ thống
+li
+    a(href='/admin/cai-dat-drl')
+        i.material-icons supervisor_account
+        span Cài đặt điểm rèn luyện
+li
+    a.menu-toggle(href='javascript:void(0)')
+        i.material-icons stars
+        span Đăng kí/ gia hạn lưu trú
+    ul.ml-menu
+        li
+            a(href='/admin/modotluutru')
+                span Mở đợt mới
+        li
+            a(href='/admin/xetduyetluutru')
+                span Xem và xét duyệt lưu trú
+li
+    a(href='/admin/account')
+        i.material-icons supervisor_account
+        span Quản lý tài khoản
+li
+    a.menu-toggle(href='javascript:void(0)')
+        i.material-icons assignment_ind
+        span Quản lý thông tin sinh viên
+    ul.ml-menu
+        li
+            a(href='/admin/info/view')
+                span Xem thông tin
+        li
+            a(href='/admin/info/statistics')
+                span Thống kê
+        li
+            a(href='/admin/info/class')
+                span Điều chỉnh lớp sinh hoạt
+li
+    a.menu-toggle(href='javascript:void(0)')
+        i.material-icons photo_library
+        span Quản lý kho hình ảnh
+    ul.ml-menu
+        li
+            a(href='/admin/document/view')
+                span Xem kho ảnh
+        li
+            a(href='/admin/document/upload')
+                span Tải ảnh mới
+        li
+            a(href='/admin/document/publish')
+                span Điều chỉnh tình trạng phát hành
+li
+    a.menu-toggle(href='javascript:void(0)')
+        i.material-icons event_note
+        span Quản lý bài viết
+    ul.ml-menu
+        li
+            a(href='/admin/tin-tuc/dang-bai')
+                span Đăng bài viết mới
+        li
+            a(href='/admin/tin-tuc/quan-ly')
+                span Điều chỉnh tình trạng phát hành
+li
+    a.menu-toggle(href='javascript:void(0)')
+        i.material-icons work
+        span Quản lý hoạt động
+    ul.ml-menu
+        li
+            a(href='/admin/activity/create')
+                span Tạo hoạt động mới
+        li
+            a(href='/admin/activity/publish')
+                span Kiểm soát hoạt động
+        li
+            a(href='/admin/activity/score/render')
+                span Kết xuất điểm rèn luyện
+li
+    a.menu-toggle(href='javascript:void(0)')
+        i.material-icons stars
+        span Quản lý điểm rèn luyện
+    ul.ml-menu
+        li
+            a(href='/admin/score')
+                span Tổng quan
+        li
+            a(href='/admin/external/view')
+                span Duyệt điểm ngoài Khoa

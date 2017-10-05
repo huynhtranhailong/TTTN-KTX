@@ -1,0 +1,114 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/bootstrap-select/css/bootstrap-select.css', rel='stylesheet')
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.dataTables.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.dataTables.min.css")
+    link(rel='stylesheet', href='/plugins/sweetalert/sweetalert.css')
+    link(rel='stylesheet', href='/plugins/jquery-confirm/dist/jquery-confirm.min.css')
+
+
+    style
+        include sass/bin/main.min.css
+
+block content
+    .container-fluid
+        // Basic Examples
+        .row
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | DUYỆT LƯU TRÚ
+                    .body
+                        .row
+                            .col-md-8.col-xs-12
+                                .col-sm-3.col-sm-push-4(style='margin-top: 10px;')
+                                    span Chọn đợt lưu trú:
+                                .col-sm-9.col-sm-push-4(style='width:237px; margin-top:4px; padding-left:0px')
+                                    select(name='registerTime',style='width:237px')
+                                        each config in configsRegister
+                                           -var count = config.registerTime.length +1
+                                            each data in config.registerTime
+                                                -count = count -1
+                                                    option(value= data.listUserRegister) Đợt #{count} - Năm #{config.semester.year}/#{parseInt(config.semester.year) + 1} - Học kỳ #{config.semester.value}
+                            .col-sm-4.col-xs-12
+                                a#finish.links.pull-left(style='margin-top: 10px') Kết thúc đợt duyệt lưu trú
+                        .row
+                            .col-md-8
+                                .col-sm-3.col-sm-push-4
+                                    a#export.links Xuất danh sách
+                                .col-sm-9.col-sm-push-4
+                                    a.links Duyệt lưu trú bằng file
+                                    a.links(style='margin-left: 10px') (Mẫu)
+                            .col-sm-4
+                                a.links Xếp phòng bằng file
+                                a.links(style='margin-left: 10px') (Mẫu)
+                        .row
+                            p#title DANH SÁCH ĐĂNG KÝ
+                            input.hidden(name='registerId' value=currentUser._id)
+
+                        .row
+                            table#infoTable.table.table-responsive.table-bordered
+                                thead
+                                    tr
+                                        th(width='5%').align-center.middle-vertical STT
+                                        th(width='10%').align-center.middle-vertical MSSV
+                                        th(width='15%').align-center.middle-vertical Họ và tên lót
+                                        th(width='8%').align-center.middle-vertical Tên
+                                        th(width='8%').align-center.middle-vertical Giới tính
+                                        th(width='8%').align-center.middle-vertical Ngày sinh
+                                        th(width='12%').align-center.middle-vertical Quê quán
+                                        th(width='15%').align-center.middle-vertical Thời gian đăng ký
+                                        th(width='8%').align-center.middle-vertical Duyệt
+                                tbody.align-center
+                                    each item,index in currentUser.listUser
+                                        tr.align-center.middle-vertical(data-id=item._id)
+                                            td.counter= index + 1
+                                            td.popInfo=item.user.id
+                                            td.align-left=item.user.name.familyName
+                                            td=item.user.name.givenName
+                                            if (item.user.details.gender)
+                                                td Nam
+                                            else
+                                                td Nữ
+                                            td.biip=moment(item.user.details.birthday).format("DD/MM/YYYY")
+                                            td#birthplace.province.dvhcvn=item.user.details.birthplace
+                                            td=moment(item.date).format('DD/MM/YYYY, HH:mm')
+                                            if(item.status=="1")
+                                                td
+                                                    i.toggleStay.glyphicon.glyphicon-remove
+                                                    i.glyphicon.glyphicon-map-marker
+                                            else
+                                                td
+                                                    i.toggleStay.glyphicon.glyphicon-ok
+                                                    i.glyphicon.glyphicon-map-marker
+
+                        input#data.hidden(value=JSON.stringify(currentUser.listUser))
+
+
+
+
+
+
+
+
+block plugins-js
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Buttons/js/dataTables.buttons.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Select/js/dataTables.select.min.js")
+    script(src='/plugins/bootstrap-select/js/bootstrap-select.js')
+    script(src='/plugins/sweetalert/sweetalert.min.js')
+    script(src='/plugins/jquery-confirm/dist/jquery-confirm.min.js')
+    script(src='/plugins/moment/moment.min.js')
+    script(src="/plugins/donvihanhchinhvietnam/data/communes.js")
+    script(src="/plugins/donvihanhchinhvietnam/data/districts.js")
+    script(src="/plugins/donvihanhchinhvietnam/data/provinces.js")
+    script(src="/plugins/donvihanhchinhvietnam/donvihanhchinhvietnam.js?v=1.0.2")
+
+    script
+        include js/bin/index.min.js

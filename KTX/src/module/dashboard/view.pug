@@ -1,0 +1,22 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    style
+        include sass/bin/main.min.css
+
+block content
+    .container-fluid
+        .row.clearfix
+            .col-lg-9.col-md-9.col-sm-12.col-xs-12
+                .card
+                    .body
+                        #map(style="height: 500px")
+            .col-lg-3.col-md-3.col-sm-12.col-xs-12
+                .card
+                    .body
+                        h4.text-center Vị trí hiện tại:
+                        h5.text-center#address
+block plugins-js
+    script(src="/plugins/gmap3/gmap3.min.js")
+    script
+        include js/bin/index.min.js

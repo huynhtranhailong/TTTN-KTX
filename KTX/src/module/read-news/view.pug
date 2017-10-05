@@ -1,0 +1,96 @@
+extends ../../layout/home
+block plugins-js
+    script(type='text/javascript', src='/plugins/bootpag/bootpag.js')
+
+block content
+    -var article = news.find(x=> x.created.getTime() == created && x.published == 1)
+    -var categories = config.newsType.find(x=> x._id == article.categories)
+    -var hotNews = news.filter(x=> x.isHot == true && x.published == true  && x._id.toString() != article._id.toString()).slice(0,5)
+    -var sameType = news.filter(x=> x.categories == article.categories && x.published == true & x._id.toString() != article._id.toString())
+    .container
+        if(article)
+            .container-fluid
+                .row.clearfix
+                    .col-sm-9
+                        .panel
+                            if(article.categories == "0")
+                                .panel-heading Mặc định
+                            else if(categories)
+                                .panel-heading= categories.name
+                            .panel-body
+                                .headtitle
+                                    p= article.title.tonal
+                                .daytime
+                                    span= moment(article.created).format('llll')
+
+                                .content!= article.content
+
+                                .daytime.pull-right
+                                    span= "Đăng bởi: " + article.creator.name.familyName + " " + article.creator.name.givenName
+                                br
+                                hr
+                                .same-category
+                                if(article.categories != "0")
+                                    p TIN CÙNG CHUYÊN MỤC
+                                    #sameType
+                                        each value in sameType.slice(0,5)
+                                            .regular-news
+                                                i.fa.fa-caret-right
+                                                a.title(href="/tin-tuc/"+ value.created.getTime() + "")=value.title.tonal
+                                                    span.createdDate= " (" +moment(value.created).format('DD/MM/YYYY') + ")"
+
+                                    nav(aria-label='paging').align-center
+                                        -var totalPage = Math.ceil(sameType.length/5)
+                                        input#totalPage.hidden(value=totalPage)
+                                        input#created.hidden(value= created)
+                                        if(categories)
+                                            input#categories.hidden(value= categories._id)
+                                        else
+                                            input#categories.hidden(value="0")
+                                        div#page-selection
+                                        script.
+                                            var totalPage = $("#totalPage").val()
+                                            var created = $("#created").val()
+                                            var categories = $("#categories").val()
+                                            $('#page-selection').bootpag({
+                                                total: totalPage
+                                            }).on("page", function (event, /* page number here */ num) {
+                                                getPage(parseInt(created),categories,parseInt(num),5)
+                                            });
+
+                    .col-sm-3
+                        .panel
+                            .panel-heading.hot-news
+                                | TIN NỔI BẬT
+                            .panel-body
+                                each value in hotNews
+                                    .breaking-news
+                                        -var indexTitle = value.title.tonal.split(' ', 8).join(' ').length
+                                        -var indexAbs = value.abstract.split(' ', 20).join(' ').length
+                                        .quick-review
+                                            a(href="/tin-tuc/" + value.created.getTime() + "")
+                                                if(value.title.tonal.length > indexTitle)
+                                                    .title= value.title.tonal.substring(0,indexTitle) + "..."
+                                                    img.img-responsive(src='/document/image/cover/' + value.cover)
+                                                else
+                                                    .title= value.title.tonal
+                                                    img.img-responsive(src='/document/image/cover/' + value.cover)
+
+                                        .short-content
+                                            if(value.abstract.length > indexAbs)
+                                                p= value.abstract.substring(0,indexAbs) + "..."
+                                            else
+                                                p= value.abstract
+                                            .more.pull-right
+                                                i.fa.fa-caret-right
+                                                -var newsType = config.newsType.find(x=> x._id == value.categories)
+                                                if(newsType)
+                                                    a(href= "/chuyen-muc/" + newsType.id + "")= newsType.name
+                                    hr
+
+
+
+    style(type="text/css")
+        include sass/bin/main.min.css
+    script
+        include js/bin/index.min.js

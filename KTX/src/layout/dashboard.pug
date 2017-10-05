@@ -1,0 +1,114 @@
+doctype html
+html
+    head
+        meta(charset='UTF-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=Edge')
+        meta(content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no', name='viewport')
+        title= pageTitle
+        // Google Fonts
+        link(href='https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext', rel='stylesheet', type='text/css')
+        link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet', type='text/css')
+        // Plugins - CSS
+        link(href='/plugins/bootstrap/css/bootstrap.css', rel='stylesheet')
+        link(href='/plugins/node-waves/waves.css', rel='stylesheet')
+        link(href='/plugins/animate-css/animate.css', rel='stylesheet')
+        style
+            include sass/bin/dashboard.min.css
+        block plugins-css
+
+        //Themes
+        link(href='/css/lib/dashboard/style.css', rel='stylesheet')
+        link(href='/css/lib/dashboard/themes/all-themes.css', rel='stylesheet')
+    body.theme-blue
+        // Page Loader
+        .page-loader-wrapper
+            .loader
+                .preloader
+                    .spinner-layer.pl-red
+                        .circle-clipper.left
+                            .circle
+                        .circle-clipper.right
+                            .circle
+                p Vui lòng đợi trong giây lát ...
+        // #END# Page Loader
+        // Overlay For Sidebars
+        .overlay
+        // #END# Overlay For Sidebars
+        // Search Bar
+        .search-bar
+            .search-icon
+                i.material-icons search
+            input(type='text', placeholder='START TYPING...')
+            .close-search
+                i.material-icons close
+        // #END# Search Bar
+        // Top Bar
+        nav.navbar
+            .container-fluid
+                .navbar-header
+                    a.navbar-toggle.collapsed(href='javascript:void(0);', data-toggle='collapse', data-target='#navbar-collapse', aria-expanded='false')
+                    a.bars(href='javascript:void(0);')
+                    a.navbar-brand(style='padding: 5px')
+                        .row
+                            .col-xs-2
+                                img(src='/media/img/bk.png', alt='', height="40")
+                            .col-xs-10
+                                h3(style="padding-left: 10px; margin-top: 10px; margin-bottom: 10px") Ký túc xá Bách Khoa
+
+        section
+            // Left Sidebar
+            aside#leftsidebar.sidebar
+                // User Info
+                .user-info
+                    .image
+                        img(src=session.avatarUrl, width='48', height='48', alt='User')
+                    .info-container
+                        .name(data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')= (session.name) ? session.name.familyName + " " + session.name.givenName : ""
+                        .email= session.email
+                        .btn-group.user-helper-dropdown
+                            i.material-icons(data-toggle='dropdown', aria-haspopup='true', aria-expanded='true') keyboard_arrow_down
+                            ul.dropdown-menu.pull-right
+                                li
+                                    a(href='/logout')
+                                        i.material-icons input
+                                        | Đăng xuất
+                // #User Info
+                // Menu
+                .menu
+                    ul.list
+                        if (session.role <= 4)
+                            include menu/level1
+                        if (session.role === 2)
+                            include menu/level2
+                        if (session.role === 3)
+                            include menu/level3
+                        if (session.role === 4)
+                            include menu/level4
+                        if (session.role === 5)
+                            include menu/level5
+                // #Menu
+                // Footer
+                .legal
+                    .copyright
+                        | © 2017
+                        a(href='javascript:void(0);') BKAN Team
+                        | .
+                    .version
+                        b Phiên bản:
+                        |  1.0.0
+                // #Footer
+            // #END# Left Sidebar
+        section.content
+            block content
+
+        // Plugins - Javascript
+        script(src='/plugins/jquery/jquery.min.js')
+        script
+            include js/bin/dashboard.min.js
+        script(src='/plugins/bootstrap/js/bootstrap.js')
+        script(src='/plugins/node-waves/waves.js')
+        script(src='/plugins/jquery-slimscroll/jquery.slimscroll.js')
+        script(src='/js/lib/dashboard/admin.js')
+        script(src='/js/lib/dashboard/demo.js')
+
+        block plugins-js

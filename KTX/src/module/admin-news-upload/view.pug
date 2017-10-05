@@ -1,0 +1,219 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/bootstrap-select/css/bootstrap-select.css', rel='stylesheet')
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.dataTables.min.css")
+
+    style
+        include sass/bin/main.min.css
+
+block content
+    .container-fluid
+        .block-header
+        .row
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | ĐĂNG BÀI VIẾT
+                    .body
+                        .row.clearfix
+                            .col-md-3
+                                .form-group
+                                    input#in.with-gap.radio-col-blue(type='radio', name='newsType', value='inside', checked=true)
+                                    label(for='in') Bài viết nội bộ
+
+                            .col-md-3
+                                .form-group
+                                    input#out.with-gap.radio-col-blue(type='radio', value='outside', name='newsType')
+                                    label(for='out') Bài có liên kết ngoài
+
+
+                        #inside
+                            form(action="/admin/news/create" method="post")
+                                .row.clearfix
+                                    .col-sm-10
+                                        .form-group
+                                            b Tiêu đề bài viết
+                                            .form-line
+                                                input.form-control(required=true type='text', placeholder='Tiêu đề bài viết', name='title[tonal]')
+
+                                .row.clearfix
+                                    .col-sm-2.p-t-30
+                                        .form-group
+                                            .demo-checkbox
+                                                input#hotNews.chk-col-blue.filled-in( type='checkbox', name='isHot')
+                                                label(for='hotNews') Tin nóng?
+                                    .col-sm-9.imageSelection
+                                        .form-group
+                                            .col-sm-4.p-t-25
+                                                button.btn.btn-info.waves-effect.waves-light(type='button', data-toggle='modal', data-target='#coverModal') Chọn ảnh cho bài viết
+                                            .col-sm-4
+                                                img.img-responsive(src=null)
+                                            .col-sm-1.p-t-25
+                                                input.hidden(type='text', name='cover' value='')
+
+
+                                .row.clearfix
+                                    .col-sm-10
+                                        .form-group
+                                            b Mô tả bài viết
+                                            .form-line
+                                                input.form-control(required=true type='text', placeholder='Mô tả bài viết', name='abstract')
+                                .row.clearfix
+                                    .col-sm-3
+                                        .form-group
+                                            label Chuyên mục bài viết
+                                            select.form-control.show-tick(name='categories')
+                                                option(value=0) Mặc định
+                                                each value in config.newsType
+                                                    option(value=value._id.toString())= value.name
+
+
+                                    .col-sm-9
+                                        .form-group
+                                            .col-sm-4.p-t-25
+                                                button.btn.btn-info.waves-effect.waves-light(type='button', data-toggle='modal', data-target='#imageModal') Thêm ảnh vào bài viết
+                                            .col-sm-4.p-t-25
+                                                button.btn.btn-info.waves-effect.waves-light(type='button', data-toggle='modal', data-target='#fileModal') Thêm tài liệu vào bài viết
+
+                                .row.clearfix
+                                    textarea#ckeditor(name='content', required=true)
+                                .row.clearfix.m-t-20
+                                    button.col-xs-4.col-xs-push-4.btn.btn-info.waves-effect.waves-light(type='submit') ĐĂNG BÀI VIẾT
+
+                        #outside.hidden
+                            form(action="/admin/news/create" method="post")
+                                .row.clearfix
+                                    .col-sm-10
+                                        .form-group
+                                            b Tiêu đề bài viết
+                                            .form-line
+                                                input.form-control(required=true type='text', placeholder='Tiêu đề bài viết', name='title[tonal]')
+
+                                .row.clearfix
+                                    .col-sm-10
+                                        .form-group
+                                            b Mô tả bài viết
+                                            .form-line
+                                                input.form-control(required=true type='text', placeholder='Mô tả bài viết', name='abstract')
+
+                                .row.clearfix
+                                    .col-sm-10
+                                        .form-group
+                                            b Đường dẫn bài viết
+                                            .form-line
+                                                input.form-control(required=true type='text', placeholder='Mô tả bài viết', name='url')
+
+                                .row.clearfix
+                                    .col-sm-3
+                                        .form-group
+                                            label Chuyên mục bài viết
+                                            select.form-control.show-tick(name='categories')
+                                                option(value=0 selected) Mặc định
+                                                each value in config.newsType.filter(x=> x.published == true)
+                                                    option(value=value._id)=value.name
+
+
+                                .row.clearfix.m-t-20
+                                    button.col-xs-4.col-xs-push-4.btn.btn-info.waves-effect.waves-light(type='submit') ĐĂNG BÀI VIẾT
+
+
+
+    #coverModal.modal.fade(role='dialog', tabindex='-1')
+        .modal-dialog.modal-lg(role='document')
+            .modal-content
+                .modal-header
+                    h4.modal-title Kho hình ảnh
+                .modal-body
+                    table#coverTable.table.table-bordered.table-responsive.table-striped
+                        thead
+                            th.text-center.middle-vertical Tên ảnh gốc
+                            th.text-center.middle-vertical Xem ảnh
+                            th.text-center.middle-vertical Ngày đăng
+                            th.text-center.middle-vertical Chọn ảnh
+
+                        tbody
+                            -var images = documents.filter( x=> x.type == 'image' && x.published == true & x.cover == true)
+                            each val, index in images
+                                tr
+                                    td.text-center.middle-vertical= val.originalname
+                                    td
+                                        img.img-responsive.center-block(src= "/document/image/"+ val.name , width="20%")
+
+                                    td.text-center= moment(val.created).fromNow()
+                                    td
+                                        button.btn.btn-primary(onclick = 'setCover("' + val.name + '")') Chọn ảnh
+
+                .modal-footer
+                    button.btn.btn-link.waves-effect(type='button', data-dismiss='modal') Đóng
+
+    #imageModal.modal.fade(role='dialog', tabindex='-1')
+        .modal-dialog.modal-lg(role='document')
+            .modal-content
+                .modal-header
+                    h4.modal-title Kho hình ảnh
+                .modal-body
+                    table#imgTable.table.table-bordered.table-responsive.table-striped
+                        thead
+                            th.text-center.middle-vertical(width='30%') Tên ảnh gốc
+                            th.text-center.middle-vertical(width='30%') Xem ảnh
+                            th.text-center.middle-vertical(width='20%') Ngày đăng
+                            th.text-center.middle-vertical(width='20%') Chọn ảnh
+
+                        tbody
+                            -var images = documents.filter( x=> x.type == 'image' && x.published == true)
+                            each val, index in images
+                                tr
+                                    td.text-center.middle-vertical= val.originalname
+                                    td
+                                        img.img-responsive.center-block(src= "/document/image/"+ val.name , width="20%")
+
+                                    td.text-center= moment(val.created).fromNow()
+                                    td
+                                        button.btn.btn-primary(onclick = 'insertImage("' + val.name + '")') Thêm ảnh
+
+                .modal-footer
+                    button.btn.btn-link.waves-effect(type='button', data-dismiss='modal') Đóng
+
+
+    #fileModal.modal.fade(role='dialog', tabindex='-1')
+        .modal-dialog.modal-lg(role='document')
+            .modal-content
+                .modal-header
+                    h4.modal-title Kho hình ảnh
+                .modal-body
+                    table#fileTable.table.table-bordered.table-responsive.table-striped(cellspacing='0')
+                        thead
+                            th.text-center.middle-vertical Tên file
+                            th.text-center.middle-vertical Ngày đăng
+                            th.text-center.middle-vertical Chèn tệp
+
+                        tbody
+                            -var images = documents.filter( x=> x.type != 'image' && x.published == true)
+                            each val, index in images
+                                tr
+                                    td.text-center.middle-vertical= val.originalname
+                                    td.text-center= moment(val.created).fromNow()
+                                    td.text-center
+                                        button.btn.btn-primary(onclick = 'insertFile("' + val.name +'","' + val.originalname + '")') Thêm tệp
+
+                .modal-footer
+                    button.btn.btn-link.waves-effect(type='button', data-dismiss='modal') Đóng
+
+
+
+block plugins-js
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Buttons/js/dataTables.buttons.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Buttons/js/buttons.bootstrap.min.js")
+
+    script(src='/plugins/bootstrap-select/js/bootstrap-select.js')
+
+    script(src='/plugins/ckeditor/ckeditor.js')
+
+    script
+        include js/bin/index.min.js

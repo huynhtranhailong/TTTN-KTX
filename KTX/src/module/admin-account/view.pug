@@ -1,0 +1,110 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/select2/css/select2.min.css', rel='stylesheet')
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Responsive/css/responsive.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Responsive/css/responsive.dataTables.min.css")
+
+    link(href='/plugins/dropzone/dropzone.css', rel='stylesheet')
+
+    style
+        include sass/bin/main.min.css
+
+block content
+    .container-fluid
+        // Basic Examples
+        .row.clearfix
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | BẢNG TÀI KHOẢN
+
+                    .body
+                        .row
+                            .table-responsive
+                                table#userTable.table.table-bordered.table-striped.table-hover.display.responsive.nowrap(cellspacing="0", width='100%')
+                                    thead
+                                        tr
+                                            th.text-center STT
+                                            th.text-center Email trường
+                                            th.text-center MSSV/MSCB
+                                            th.text-center Họ và tên lót
+                                            th.text-center Tên
+                                            th.text-center Quyền tài khoản
+                                    tbody
+                                        each  user, index in users
+                                            tr
+                                                td.text-center= index + 1
+                                                td.text-center= user.email
+                                                td.text-center= user.id
+                                                td= user.name.familyName
+                                                td= user.name.givenName
+                                                td.text-center= user.role
+
+
+            .col-lg-6.col-md-6.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | THÊM TÀI KHOẢN
+                        small
+                            | (Bằng cách nhập tay mã số sinh viên/ mã số cán bộ)
+                    .body
+                        form(action='/admin/account/create', method='post')
+                            .row.clearfix
+                                .col-md-12
+                                    .form-group
+                                        .form-line
+                                            p
+                                                b Tên tài khoản
+                                            textarea.form-control.no-resize(rows='5', name='email')
+                            .row.clearfix
+                                .col-md-4
+                                .col-md-4
+                                    button.btn.btn-primary.waves-effect(type="submit") THÊM TÀI KHOẢN
+            .col-lg-6.col-md-6.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | CHUYỂN QUYỀN TÀI KHOẢN
+                    .body
+                        form(action='/admin/account/role/change', method='post')
+                            .row.clearfix
+                                .col-md-12
+                                    .form-group
+                                        p
+                                            b Tên tài khoản
+                                        select.form-control.show-tick(name='ids', multiple=true)
+                                            each user, index in users
+                                                option(value=user._id)= user.id + ((user.name && user.name.familyName && user.name.givenName) ? ' - ' + user.name.familyName + ' ' + user.name.givenName : "")
+                                .col-md-12
+                                    .form-group
+                                        p
+                                            b Quyền tài khoản
+                                        select.form-control.show-tick(name='role')
+                                            option(value=1) Sinh viên
+                                            option(value=2) Cán bộ lớp
+                                            option(value=3) UV BCH Đoàn - Hội
+                                            option(value=4) Thường trực Đoàn - Hội
+                            .row.clearfix
+                                .col-md-4
+                                .col-md-4
+                                    button.btn.btn-primary.waves-effect(type="submit") THÊM TÀI KHOẢN
+
+
+
+
+block plugins-js
+    script(src='/plugins/select2/js/select2.full.min.js')
+    script(src='/plugins/select2/js/i18n/vi.js')
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Responsive/js/dataTables.responsive.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Responsive/js/responsive.bootstrap.min.js")
+    script(src='/plugins/dropzone/dropzone.js')
+
+
+    script
+        include js/bin/index.min.js

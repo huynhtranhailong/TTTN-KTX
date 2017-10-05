@@ -1,0 +1,124 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.dataTables.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.dataTables.min.css")
+    link(rel='stylesheet', href='/plugins/jquery-confirm/css/jquery-confirm.css')
+    link(rel='stylesheet', href='/plugins/select2/css/select2.min.css')
+
+block content
+    .container-fluid
+        // Image Gallery
+        .block-header
+        .row.clearfix
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | CÀI ĐẶT HỆ THỐNG - QUẢN LÝ ĐĂNG KÝ/GIA HẠN
+                    .body
+                        if(config)
+                            .row.clearfix
+                                .col-sm-2
+                                .col-sm-2
+                                    h5 Chọn đợt lưu trú
+                                .col-sm-4
+                                    select.form-control.select2.registerTime(style='width: 100%;' name='time')
+                                        each config in configs
+                                            if(config.registerTime.length != 0)
+                                                -var count = config.registerTime.length +1
+                                                each data in config.registerTime
+                                                    -count = count -1
+                                                    if(moment(data.startDate) <= moment(currentDate) && moment(data.endDate) >= moment(currentDate))
+                                                        option(value= data._id) Đợt #{count} - Năm #{config.semester.year} / #{parseInt(config.semester.year) + 1} - Học kỳ #{config.semester.value}
+                            .row.clearfix
+                                .col-sm-2
+                                .col-sm-2
+                                    h5 Chọn loại phòng
+                                .col-sm-4
+                                    select.form-control.select2.roomType(style='width: 100%;' name='roomType')
+                                        if(config.roomType.length != 0)
+                                            each data in config.roomType
+                                                option(value = data._id)= data.name
+                            .row.clearfix
+                                .col-sm-2
+                                .col-sm-2
+                                    h5 Thông tin chi tiết
+                                .col-sm-4
+                                    h6.detail
+                            .row.clearfix
+                                .col-sm-5
+                                .com-sm-3
+                                    if(session.status == 0 )
+                                        button.btn.btn-info.register(style="width : 110px") Đăng ký
+                                    else
+                                        button.btn.btn-info.register(style="width : 110px" ) Gia hạn
+
+                            .row.clearfix(style="margin-top : 30px")
+                                h4 Lịch sử đăng ký/gia hạn lưu trú :
+                                input#session.hide(value=JSON.stringify(session.details))
+
+                            .row.clearfix
+                                table.table.table-responsive.table-striped.table-bordered
+                                    thead
+                                        tr
+                                            th.text-center STT
+                                            th.text-center Đợt
+                                            th.text-center Học kỳ
+                                            th.text-center Năm học
+                                            th.text-center Thời gian đăng ký
+                                            th.text-center Loại phòng
+                                            th.text-center Tình trạng
+
+                                        tbody
+                                            each data, index in registers
+                                                tr
+                                                    td.text-center= index +1
+                                                    - var countRegister , semester , value
+                                                    each config in configs
+                                                        if(config.registerTime.length != 0)
+                                                            -var count = config.registerTime.length +1
+                                                            each temp in config.registerTime
+                                                                -count = count -1
+                                                                if(temp.listUserRegister.toString() == data._id )
+                                                                    -countRegister = count
+                                                                    - value = config.semester.value
+                                                                    -semester = config.semester.year
+                                                    td.text-center
+                                                        | Đợt #{countRegister}
+                                                    td.text-center= value
+                                                    td.text-center
+                                                        | #{semester} - #{parseInt(semester) +1}
+                                                    td.text-center= moment(data.listUser[0].date).format("DD/MM/YYYY")
+                                                    -var nameRoomType
+                                                    if(config.roomType.length != 0)
+                                                        each room in config.roomType
+                                                            if(data.listUser[0].roomType == room._id)
+                                                                -nameRoomType = room.name
+
+                                                    td.text-center= nameRoomType
+                                                    if(data.listUser[0].status == 0)
+                                                        td.text-center
+                                                            span Chưa duyệt
+                                                            a(style="cursor : pointer",onclick='removeRegister("'+ data._id +'"' + ',"'+ data.listUser[0]._id + '")') ( Hủy)
+                                                    else if(data.listUser[0].status == 1)
+                                                        td.text-center Đã duyệt
+                                                    else
+                                                        td.text-center Không duyệt
+
+block plugins-js
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Buttons/js/dataTables.buttons.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Select/js/dataTables.select.min.js")
+    script(src='/plugins/jquery-confirm/js/jquery-confirm.js')
+    script(src='/plugins/select2/js/select2.full.min.js')
+
+
+    style
+        include sass/bin/main.min.css
+    script
+        include js/bin/index.min.js

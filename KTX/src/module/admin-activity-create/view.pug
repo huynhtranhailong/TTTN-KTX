@@ -1,0 +1,129 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/bootstrap-select/css/bootstrap-select.css', rel='stylesheet')
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.dataTables.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.dataTables.min.css")
+    link(rel='stylesheet', href='/plugins/sweetalert/sweetalert.css')
+
+
+block content
+    .container-fluid
+        // Image Gallery
+        .block-header
+        .row
+            .col-lg-12.col-md-12.col-md-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | TẠO HOẠT ĐỘNG
+                    .body
+                        form(action="/admin/activity/create " method="post")
+                            .row.clearfix
+                                .col-md-9
+                                    .form-group
+                                        .form-line
+                                            input.form-control(required=true, type='text', placeholder='Tên hoạt động', name='name')
+                                .col-md-3
+                                    .form-group
+                                        .form-line
+                                            input.form-control(required=true, readonly=true, type='text', placeholder='Mã hoạt động', name='id', value= id)
+                            .row.clearfix
+                                .col-md-9
+                                    .form-group
+                                        .form-line
+                                            input.form-control(required=true type='text', placeholder='Mô tả hoạt động', name='abstract')
+                                .col-md-3
+                                    .form-group
+                                        .demo-checkbox
+                                            input#allowExternal.chk-col-blue.filled-in( type='checkbox', name='allowExternal', checked)
+                                            label(for='allowExternal') Chấp nhận sinh viên ngoài Khoa
+                            .row.clearfix
+                                .col-md-12
+                                    .form-group
+                                        label Tiêu chí hoạt động
+                                        select.form-control.show-tick(name='category')
+                                            option(value=1) Ý thức tham gia học tập
+                                            option(value=2) Ý thức chấp hành nội quy, quy chế, quy định trong Nhà trường
+                                            option(value=3) Ý thức tham gia các hoạt động chính trị, xã hội, văn hóa, văn nghệ, thể thao, phòng chống tội phạm và các tệ nạn xã hội
+                                            option(value=4) Ý thức công dân trong quan hệ cộng đồng
+                                            option(value=5) Ý thức và kết quả khi tham gia công tác cán bộ lớp, đoàn thể, tổ chức trong trường
+                                            option(value=6) Điểm thưởng đặc biệt
+                                            option(value=7) Kỷ luật
+                            .row.clearfix
+                                .col-md-12
+                                    .form-group
+                                        .form-line
+                                            input.form-control(required=true type='text', placeholder='Địa điểm tổ chức', name='location')
+                            .row.clearfix
+                                .col-md-2
+                                    .form-group
+                                        input#singleDay.with-gap.radio-col-blue(type='radio', name='time-type', value='single', checked=true)
+                                        label(for='singleDay') Một ngày
+
+                                .col-md-2
+                                    .form-group
+                                        input#multipleDays.with-gap.radio-col-blue(type='radio', value='multiple', name='time-type')
+                                        label(for='multipleDays') Nhiều ngày
+
+                                .col-md-8
+                                    #singleDayDetails
+                                        .col-md-6
+                                            .form-group
+                                                .form-line
+                                                    input.form-control.date(required=true, type='text', placeholder='Ngày tổ chức', name='date')
+                                        .col-md-3
+                                            .form-group
+                                                .form-line
+                                                    input.form-control.time24(required=true, type='text', placeholder='Giờ bắt đầu', name='startTime')
+                                        .col-md-3
+                                            .form-group
+                                                .form-line
+                                                    input.form-control.time24(required=true, type='text', placeholder='Giờ kết thúc', name='endTime')
+                                    #multipleDaysDetails.hidden
+                                        .col-md-6
+                                            .form-group
+                                                .form-line
+                                                    input.form-control.date(required=false, type='text', placeholder='Ngày bắt đầu', name='startDate')
+                                        .col-md-6
+                                            .form-group
+                                                .form-line
+                                                    input.form-control.date(required=false, type='text', placeholder='Ngày kết thúc', name='endDate')
+
+                            .row.clearfix
+                                .col-md-3
+                                    .form-group
+                                        .form-line
+                                            input.form-control(required=true, type='number', placeholder='Điểm rèn luyện tối đa', name='interests[score]')
+                                .col-md-3
+                                    .form-group
+                                        .form-line
+                                            input.form-control(required=true, type='number', placeholder='Số ngày CTXH tối đa', name='interests[days]')
+                                .col-md-6.imageSelection
+                                    .form-group
+                                        .col-md-2
+                                            button.btn.btn-info.waves-effect.waves-light(type='button', data-toggle='modal', data-target='#imageModal')
+                                                i.material-icons face
+                                            input.hidden(required=true, type='text', name='cover')
+                                        .col-md-10
+                                            img.img-responsive(src=null)
+                            .row.clearfix
+                                button.col-md-4.col-md-push-4.btn.btn-info.waves-effect.waves-light(type='submit') Tạo hoạt động
+
+
+block plugins-js
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Buttons/js/dataTables.buttons.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Select/js/dataTables.select.min.js")
+    script(src='/plugins/bootstrap-select/js/bootstrap-select.js')
+    script(src='/plugins/jquery-inputmask/jquery.inputmask.bundle.js')
+    script(src='/plugins/sweetalert/sweetalert.min.js')
+
+    style
+        include sass/bin/main.min.css
+    script
+        include js/bin/index.min.js

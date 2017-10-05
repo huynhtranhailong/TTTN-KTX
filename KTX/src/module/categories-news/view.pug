@@ -1,0 +1,87 @@
+extends ../../layout/home
+block plugins-js
+    script(type='text/javascript', src='/plugins/bootpag/bootpag.js')
+    script(type='text/javascript', src='/plugins/moment/moment.min.js')
+
+
+block content
+    .container
+        -var categories = config.newsType.find(x=> x.id == categoriesId)
+        -var hotNews = news.filter(x=> x.isHot == true && x.published == true).slice(0,5)
+        -var sameType = news.filter(x=> categories._id == x.categories && x.published == true)
+        .container-fluid
+            .row.clearfix
+                .col-sm-9
+                    .panel
+                        .panel-heading= categories.name
+                        .panel-body.article
+                            each value in sameType.slice(0,10)
+                                .breaking-news
+                                    .quick-review
+                                        if(value.url)
+                                            a(href=value.url)
+                                                .title
+                                                    i.fa.fa-caret-right
+                                                    span= value.title.tonal
+                                                    p= moment(value.created).format('llll')
+                                        else
+                                            a(href="/tin-tuc/" + value.created.getTime() + "")
+                                                .title
+                                                    i.fa.fa-caret-right
+                                                    span= value.title.tonal
+
+                                    .short-content
+                                        p= value.abstract
+
+                    nav(aria-label='paging').align-center
+                        -var totalPage = Math.ceil(sameType.length/10)
+                        input#totalPage.hidden(value=totalPage)
+                        input#categories.hidden(value= categories._id)
+                        div#page-selection
+                        script.
+                            var totalPage = $("#totalPage").val()
+                            var categories = $("#categories").val()
+                            $('#page-selection').bootpag({
+                                total: totalPage
+                            }).on("page", function (event, /* page number here */ num) {
+                                getPage('', categories, parseInt(num), 10)
+                            });
+
+                .col-sm-3
+                    .panel
+                        .panel-heading.hot-news
+                            | TIN NỔI BẬT
+                        .panel-body
+                            each value in hotNews
+                                .breaking-news
+                                    -var indexTitle = value.title.tonal.split(' ', 8).join(' ').length
+                                    -var indexAbs = value.abstract.split(' ', 20).join(' ').length
+                                    .quick-review
+                                        a(href="/tin-tuc/" + value.created.getTime() + "")
+                                            if(value.title.tonal.length > indexTitle)
+                                                .title= value.title.tonal.substring(0, indexTitle) + "..."
+                                                img.img-responsive(src='/document/image/cover/' + value.cover)
+                                            else
+                                                .title= value.title.tonal
+                                                img.img-responsive(src='/document/image/cover/' + value.cover)
+
+                                    .short-content
+                                        if(value.abstract.length > indexAbs)
+                                            p= value.abstract.substring(0, indexAbs) + "..."
+                                        else
+                                            p= value.abstract
+                                        .more.pull-right
+                                            i.fa.fa-caret-right
+                                            -var newsType = config.newsType.find(x=> x._id == value.categories)
+                                            if(newsType)
+                                                a(href= "/chuyen-muc/" + newsType.id + "")= newsType.name
+                                hr
+
+
+
+
+
+    style(type="text/css")
+        include sass/bin/main.min.css
+    script
+        include js/bin/index.min.js

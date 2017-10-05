@@ -1,0 +1,378 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/bootstrap-select/css/bootstrap-select.css', rel='stylesheet')
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href='/plugins/jquery-confirm/css/jquery-confirm.css')
+    link(rel='stylesheet', href='/plugins/treegrid/css/jquery.treegrid.css')
+    link(rel='stylesheet', href='/plugins/select2/css/select2.min.css')
+    link(rel='stylesheet', href='/plugins/jquery-ui/jquery-ui.min.css')
+
+
+
+    style
+        include sass/bin/main.min.css
+
+block content
+    .container-fluid
+        // Basic Examples
+        .row.clearfix
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | QUẢN LÝ HỆ THỐNG
+                    .body
+                        // Nav tabs
+                        ul.nav.nav-tabs.tab-nav-right(role='tablist')
+                            li(role='presentation' class= (activeDiv == "semester" || activeDiv == "" )? "active" : "")
+                                a(href='#semester', data-toggle='tab', aria-expanded='false') HỌC KÌ
+                            li(role='presentation' class= activeDiv == "categories"? "active" : "")
+                                a(href='#categories', data-toggle='tab', aria-expanded='false') DANH MỤC
+                            li(role='presentation' class= activeDiv == "menu"? "active" : "")
+                                a(href='#menu', data-toggle='tab' aria-expanded='true') MENU
+                            li(role='presentation' class= activeDiv == "linkedSite"? "active" : "")
+                                a(href='#linkedsite', data-toggle='tab') TRANG LIÊN KẾT
+                            li(role='presentation' class= activeDiv == "floor"? "active" : "")
+                                a(href='#floor', data-toggle='tab') TẦNG-PHÒNG-
+                            li(role='presentation' class= activeDiv == "roomType" ? "active" : "")
+                                a(href='#roomType', data-toggle='tab') LOẠI PHÒNG
+                        // Tab panes
+                        .tab-content
+                            #semester.tab-pane.fade(role='tabpanel' class= (activeDiv == "semester" || activeDiv =="" ) ? "active in" : "")
+                                .row.clearfix
+                                    .col-sm-5
+                                        h5 TẠO HỌC KỲ MỚI
+                                        form(action="/admin/semester/create" method="post")
+                                            .col-sm-12
+                                                if(error)
+                                                    p.col-red= error
+                                                .form-group
+                                                    b Năm học
+                                                    select.form-control.show-tick(name='semester[year]')
+                                                        -var date = new Date()
+                                                        -var year = date.getFullYear()
+                                                        -var month = date.getMonth()
+                                                        if(month < 8)
+                                                            option(value=year - 2)= (year - 2) + '-' + (year - 1)
+                                                            option(value=year - 1 selected)= (year - 1) + '-' + (year)
+                                                            option(value=year)= (year) + '-' + (year + 1)
+                                                        else
+                                                            option(value=year - 2)= (year - 2) + '-' + (year - 1)
+                                                            option(value=year - 1)= (year - 1) + '-' + (year)
+                                                            option(value=year selected)= (year) + '-' + (year + 1)
+                                            .col-sm-12
+                                                .form-group
+                                                    b Học kỳ
+                                                    .form-line
+                                                        if(month < 8)
+                                                            -var valueOfYear = configs.filter(x=>x.semester.year == (year-1).toString())
+                                                            if(valueOfYear.length == 0)
+                                                                input.form-control(required=true type='text', name='semester[value]' readonly=true  value=1)
+                                                            else
+                                                                input.form-control(required=true type='text', name='semester[value]' readonly=true  value=valueOfYear[0].semester.value +1)
+                                                        else
+                                                            -var valueOfYear1 = configs.filter(x=>x.semester.year == (year).toString())
+                                                            if(valueOfYear1.length == 0)
+                                                                input.form-control(required=true type='text',  name='semester[value]' readonly=true  value= 1)
+                                                            else
+                                                                input.form-control(required=true type='text',  name='semester[value]' readonly=true  value=(valueOfYear1.length + 1))
+
+                                            .col-md-6
+                                                .form-group
+                                                    b Thời gian bắt đầu
+                                                    .form-line
+                                                        input.form-control.date(required=true, type='text', placeholder='DD/MM/YYYY', name='semester[startDate]')
+                                            .col-md-6
+                                                .form-group
+                                                    b Thời gian kết thúc
+                                                    .form-line
+                                                        input.form-control.date(required=false, type='text', placeholder='DD/MM/YYYY', name='semester[endDate]')
+
+                                            button.col-md-4.col-md-push-4.btn.btn-info.waves-effect.waves-light(type='submit') TẠO MỚI
+                                    .col-sm-7
+                                        h5 DANH SÁCH CÁC HỌC KỲ ĐÃ TẠO
+                                        if(errorUpdate)
+                                            p.col-red= errorUpdate
+                                        table.table.table-bordered
+                                            thead
+                                                tr
+                                                    th(rowspan=2).text-center.middle-vertical STT
+                                                    th(rowspan=2).text-center.middle-vertical Năm học
+                                                    th(rowspan=2).text-center.middle-vertical Học Kỳ
+                                                    th(colspan=2).text-center.middle-vertical Thời Gian
+                                                    th(rowspan=2).text-center.middle-vertical Điều chỉnh
+                                                tr
+                                                    th.text-center Bắt đầu
+                                                    th.text-center Kết thúc
+
+                                            tbody
+                                                -var listYear = underscore.uniq(configs,function(item){return item.semester.year})
+                                                -var rowIndex = 0
+                                                each year,indexYear in listYear
+                                                    -var configsOfYear = configs.filter(x=>x.semester.year == year.semester.year)
+                                                    -rowIndex = rowIndex + configsOfYear.length
+                                                    each config,index in configsOfYear
+                                                        tr
+                                                            td.text-center.middle-vertical=  rowIndex - configsOfYear.length + index + 1
+                                                            if(index == 0)
+                                                                td(rowspan= configsOfYear.length).text-center.middle-vertical= config.semester.year + '-' + (parseInt(config.semester.year) +1).toString()
+                                                            //td.text-center.middle-vertical= config.semester.year + '-' + (parseInt(config.semester.year) +1).toString()
+                                                            td.text-center.middle-vertical= config.semester.value
+                                                            if(config.semester.year == currentConfig.semester.year && config.semester.value == currentConfig.semester.value)
+                                                                td.text-center.middle-vertical.col-red= moment(config.semester.startDate).format('DD/MM/YYYY')
+                                                                if(config.semester.endDate)
+                                                                    td.text-center.middle-vertical.col-red= moment(config.semester.endDate).format('DD/MM/YYYY')
+                                                                    td.text-center.middle-vertical
+                                                                        button.btn.btn-sm.btn-primary.waves-effect.waves-light(onclick='editDate("' + config._id + '","' + moment(config.semester.startDate).format('DD/MM/YYYY') + '","' + moment(config.semester.endDate).format('DD/MM/YYYY') + '","' + config.semester.year  +'","' + config.semester.value + '")')
+                                                                            i.material-icons edit
+
+                                                                else
+                                                                    td.text-center
+                                                                    td.text-center
+                                                                        button.btn.btn-sm.btn-primary.waves-effect.waves-light(onclick='editDate("' + config._id + '","' + moment(config.semester.startDate).format('DD/MM/YYYY')  + '","","' + config.semester.year  +'","' + config.semester.value + '")')
+                                                                            i.material-icons edit
+                                                            else
+                                                                td.text-center.middle-vertical= moment(config.semester.startDate).format('DD/MM/YYYY')
+                                                                if(config.semester.endDate)
+                                                                    td.text-center.middle-vertical= moment(config.semester.endDate).format('DD/MM/YYYY')
+                                                                    td.text-center.middle-vertical
+                                                                        button.btn.btn-sm.btn-primary.waves-effect.waves-light(onclick='editDate("' + config._id + '","' + moment(config.semester.startDate).format('DD/MM/YYYY') + '","' + moment(config.semester.endDate).format('DD/MM/YYYY') + '","' + config.semester.year + '","' + config.semester.value + '")')
+                                                                            i.material-icons edit
+
+                                                                else
+                                                                    td.text-center
+                                                                    td.text-center
+                                                                        button.btn.btn-sm.btn-primary.waves-effect.waves-light(onclick='editDate("' + config._id + '","' + moment(config.semester.startDate).format('DD/MM/YYYY') + '","","' + config.semester.year + '","' + config.semester.value + '")')
+                                                                            i.material-icons edit
+
+                            #menu.tab-pane.fade(role='tabpanel' class= activeDiv == "menu"? "active in" : "")
+                                .row.clearfix
+                                    .col-sm-12
+                                        h5 QUẢN LÝ MENU
+                                        if(currentConfig)
+                                            table.tree.col-sm-12
+                                                tr.treegrid-1.expanded
+                                                    td(width="50%").middle-vertical Cây menu
+                                                    td.middle-vertical
+                                                        a(onclick='addParentMenu("' + currentConfig._id + '")')
+                                                            i.material-icons add_box
+                                                if(currentConfig.menu.length != 0)
+                                                    -var length = 0
+                                                    each menu,index in currentConfig.menu
+                                                        -var className = 'treegrid-' + (length+2).toString() + ' treegrid-parent-1'
+                                                        tr.expanded(class= className)
+                                                            td.middle-vertical= menu.name
+                                                            td.middle-vertical
+                                                                a(onclick='addChildrenMenu("' + currentConfig._id + '","' + menu._id + '")')
+                                                                    i.material-icons add_box
+                                                                a(onclick='editParentMenu("' + currentConfig._id + '","' + menu._id + '","' + menu.name + '","' + menu.link + '")')
+                                                                    i.material-icons mode_edit
+                                                                a(onclick='deleteParentMenu("' + currentConfig._id + '","' + menu._id + '","' + menu.name + '")')
+                                                                    i.material-icons delete
+                                                        each childMenu, indexChild in menu.child
+                                                            -var classChild = 'treegrid-' + (length + indexChild+2+1).toString() + ' treegrid-parent-' + (length+2).toString()
+                                                            tr(class= classChild)
+                                                                td.middle-vertical= childMenu.name
+                                                                td.middle-vertical
+                                                                    a(style='visibility: hidden')
+                                                                        i.material-icons add_box
+                                                                    a(onclick='editChildrenMenu("' + currentConfig._id + '","' + childMenu._id + '","' + childMenu.name + '","' + childMenu.link + '")')
+                                                                        i.material-icons mode_edit
+                                                                    a(onclick='deleteChildrenMenu("' + currentConfig._id + '","' + childMenu._id + '","' + childMenu.name +  '")')
+                                                                        i.material-icons delete
+                                                        - length = length + menu.child.length + 1
+
+
+                            #categories.tab-pane.fade(role='tabpanel')
+                                .row
+                                    .col-sm-12
+                                        h5 QUẢN LÝ CHUYÊN MỤC
+                                    .col-sm-12
+                                        if(currentConfig)
+                                            .row.clearfix
+                                                .col-sm-6
+                                                    button.col-sm-4.btn.btn-info.waves-effect.waves-light.newCatagories(type='button' , style="margin-left : 10px ; margin-bottom : 10px") TẠO MỚI
+                                            .row.clearfix
+                                                .col-sm-12
+                                                    table#categoriesTable.table.table-responsive.table-striped.table-bordered
+                                                        thead
+                                                            tr
+                                                                th.text-center STT
+                                                                th.text-center Tên chuyên mục
+                                                                th.text-center Ngày tạo
+                                                                th.text-center Số lượng bài viết
+                                                                th.text-center Lần đăng cuối
+                                                                th.text-center  Điều chỉnh
+
+                                                            tbody#rowCatagories
+                                                                each data , index in currentConfig.newsType
+                                                                    tr(data-id= data._id)
+                                                                        td.text-center= index + 1
+                                                                        td.text-center
+                                                                            a(href="/chuyen-muc/" + data.id) #{data.name}
+                                                                        td.text-center= moment(data.created).format("DD/MM/YYYY")
+                                                                        -var count = listNews.filter(x=> x.categories == data._id).length
+                                                                        td.text-center= count
+                                                                        if (count == 0 )
+                                                                            td.text-center Chưa có bài đăng nào
+                                                                        else
+                                                                            -var news = listNews.filter(x=> x.categories == data._id).map(x=>x.created)
+                                                                            td.text-center= moment(moment(news[0]).format("YYYYMMDD"), "YYYYMMDD").fromNow()
+                                                                        td.text-center
+                                                                            if(data.published == true )
+                                                                                a(onclick='changeCategoriesPublished("' + data.id + '","' + data._id + '")' ).glyphicon.glyphicon-star
+                                                                                a(style="margin-left : 5px" , onclick='changeCategoriesName("' + data._id + '" , "' + data.id + '" , "' + data.name + '")').glyphicon.glyphicon-pencil
+                                                                            else
+                                                                                a(onclick='changeCategoriesPublished("' + data.id + '","' + data._id + '")' ).glyphicon.glyphicon-star-empty
+                                                                                a(style="margin-left : 5px",onclick='changeCategoriesName("' + data._id + '" , "' + data.id + '" , "' + data.name + '")').glyphicon.glyphicon-pencil
+
+                            #linkedsite.tab-pane.fade(role='tabpanel' class= activeDiv == "linkedSite"? "active in" : "")
+                                .row.clearfix
+                                    if(currentConfig)
+                                        button.col-md-2.btn.btn-info.waves-effect.waves-light.newlinkedsite(type='button') TẠO LIÊN KẾT
+                                        table#link-table.table.table-responsive.table-bordered
+                                            thead
+                                                tr
+                                                    th(width='8%').align-center.middle-vertical Số thứ tự
+                                                    th(width='20%').align-center.middle-vertical Ảnh đại diện
+                                                    th(width='15%').align-center.middle-vertical Đường dẫn
+                                                    th(width='15%').align-center.middle-vertical Nội dung
+                                                    th(width='10%').align-center.middle-vertical Ngày tạo
+                                                    th(width='10%').align-center.middle-vertical Điều chỉnh
+                                            tbody
+                                                each item,index in currentConfig.linkedSite
+                                                    tr.align-center.middle-vertical(data-id=item._id)
+                                                        td.counter= index + 1
+                                                        td
+                                                            img.img-responsive(src='/document/image/' + item.img, style="width: 200px, height: 200px")
+                                                            input(type='hidden' value= item.img)
+                                                        td
+                                                            if (item.link != '')
+                                                                a(href=item.link)=item.link
+                                                        td= item.content
+                                                        td= moment(item.created).format("DD/MM/YYYY")
+                                                        td.align-center
+                                                            if(item.published == true )
+                                                                a(onclick='isPublished("' + item._id + '")')
+                                                                    i.glyphicon.glyphicon-star
+                                                                a(style="margin-left : 10px" , onclick='editContent("' + item._id + '","' + item.link + '","' + item.content + '")')
+                                                                    i.glyphicon.glyphicon-pencil
+                                                            else
+                                                                a(onclick='isPublished("' + item._id + '")')
+                                                                    i.glyphicon.glyphicon-star-empty
+                                                                a(style="margin-left : 10px" , onclick='editContent("' + item._id + '","' + item.link + '","' + item.content + '")')
+                                                                    i.glyphicon.glyphicon-pencil
+
+                                        button.align-center.col-md-2.col-md-push-5.btn.btn-info.waves-effect.waves-light.updateLinkedSite(type='button') LƯU THAY ĐỔI
+
+                            //chi-start
+                            #floor.tab-pane.fade(role='tabpanel')
+                                .row.clearfix
+                                    if(currentConfig)
+                                        .col-sm-8
+                                            h5 Danh sách phòng
+                                            .col-sm-4
+                                                if currentFloor != null
+                                                    each floor in currentFloor
+                                                        .row.clearfix
+                                                            button.form-control(style='background-color: #fff; border: none; color: blue; box-shadow: none; text-align: left;', name='floorlist', value= floor._id , onclick='showRoomOfFloor()') TẦNG  #{floor.name}
+                                                                i.material-icons(style='vertical-align: sub; font-size: 100%') chevron_right
+
+                                            .col-sm-4
+                                                #roomList
+                                            .col-sm-4
+                                                #bedList
+
+                                        .col-sm-4
+                                            h5 Điều chỉnh
+                                            .row.clearfix
+                                                .col-sm-4
+                                                    p(style='font-size: 120%; padding-top: 8px') Tầng
+                                                .col-sm-2
+                                                    button.btn.bg-blue.btn-circle.waves-effect.waves-circle.waves-float.small(type='button', name='addFloor')
+                                                        i.material-icons add
+                                                .col-sm-2
+                                                    button.btn.bg-red.btn-circle.waves-effect.waves-circle.waves-float.small(type='button', name='removeFloor')
+                                                        i.material-icons clear
+                                            .row.clearfix
+                                                .col-sm-4
+                                                    p(style='font-size: 120%; padding-top: 8px') Phòng
+                                                .col-sm-2
+                                                    button.btn.bg-blue.btn-circle.waves-effect.waves-circle.waves-float.small(type='button', name='addRoom')
+                                                        i.material-icons add
+                                                .col-sm-2
+                                                    button.btn.bg-red.btn-circle.waves-effect.waves-circle.waves-float.small(type='button', name='removeRoom')
+                                                        i.material-icons clear
+                                            .row.clearfix
+                                                .col-sm-4
+                                                    p(style='font-size: 120%; padding-top: 8px') Giường
+                                                .col-sm-2
+                                                    button.btn.bg-blue.btn-circle.waves-effect.waves-circle.waves-float.small(type='button', name='addBed')
+                                                        i.material-icons add
+                                                .col-sm-2
+                                                    button.btn.bg-red.btn-circle.waves-effect.waves-circle.waves-float.small(type='button', name='removeBed')
+                                                        i.material-icons clear
+                                            hr
+                                            .row
+                                                input.hidden(type='text', value= currentConfig, name='currentConfig')
+                                            .row.clearfix
+                                                #formAction
+                            #roomType.tab-pane.fade(role='tabpanel')
+                                .row
+                                    .col-sm-12
+                                        h5 QUẢN LÝ lOẠI PHÒNG
+                                    .col-sm-12
+                                        if(currentConfig)
+                                            .row.clearfix
+                                                .col-sm-6
+                                                    input#dataFloor.hide(value=JSON.stringify(currentConfig.floor))
+                                                    button.btn.btn-info.waves-effect.waves-light.newRoomType(style="margin-left : 10px ; margin-bottom : 10px") TẠO MỚI
+                                            .row.clearfix
+                                                .col-sm-12
+                                                    table#tableRoomType.table.table-responsive.table-striped.table-bordered
+                                                        thead
+                                                            tr
+                                                                th.text-center STT
+                                                                th.text-center Tên loại phòng
+                                                                th.text-center Ngày tạo
+                                                                th.text-center Số lượng phòng
+                                                                th.text-center  Điều chỉnh
+
+                                                            tbody#rowRoomType
+                                                                each data , index in currentConfig.roomType
+                                                                    tr(data-id= data._id)
+                                                                        td.text-center= index + 1
+                                                                        td.text-center=data.name
+                                                                        td.text-center= moment(data.created).format("DD/MM/YYYY")
+                                                                        -var count = 0
+                                                                        each room in currentConfig.floor
+                                                                            - count =count + parseInt(room.roomList.filter(x=> x.type == data._id).length)
+                                                                        td.text-center
+                                                                            a(href= "#" , onclick='showRoom("' + data._id + '"' + ',' + '"' + data.name + '")') #{count}
+                                                                        td.text-center
+                                                                            if(data.published == true )
+                                                                                a(onclick='changePublishedRoomType("' + data._id + '")' ).glyphicon.glyphicon-star
+                                                                                a(style="margin-left : 5px" , onclick='changeNameRoomType("' + data._id + '" , "' + data.name + '")').glyphicon.glyphicon-pencil
+                                                                            else
+                                                                                a(onclick='changePublishedRoomType("' + data._id + '")' ).glyphicon.glyphicon-star-empty
+                                                                                a(style="margin-left : 5px",onclick='changeNameRoomType("' + data._id + '" , "' + data.name + '")').glyphicon.glyphicon-pencil
+
+
+block plugins-js
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src='/plugins/jquery-dataTables-rowsGroup/js/jquery-dataTables-rowsGroup.js')
+    script(src='/plugins/bootstrap-select/js/bootstrap-select.js')
+    script(src='/plugins/jquery-inputmask/jquery.inputmask.bundle.js')
+    script(src='/plugins/jquery-confirm/js/jquery-confirm.js')
+    script(src='/plugins/treegrid/js/jquery.treegrid.js')
+    script(src='/plugins/select2/js/select2.min.js')
+    script(src='/plugins/jquery-ui/jquery-ui.js')
+
+
+
+
+
+    script
+        include js/bin/index.min.js

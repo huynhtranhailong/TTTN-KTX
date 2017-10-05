@@ -1,0 +1,33 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/dropzone/dropzone.css', rel='stylesheet')
+
+    style
+        include sass/bin/main.min.css
+block content
+    .container-fluid
+        // Image Gallery
+        .block-header
+        .row
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | TẢI TỆP
+                    .body
+                        form#frmFileUpload.dropzone(action='/admin/document/upload', method='post', enctype='multipart/form-data')
+                            .dz-message
+                                .drag-icon-cph
+                                    i.material-icons touch_app
+                                h3 Thả hoặc bấm vào đây để tải từng file lên hệ thống
+
+                            .fallback
+                                input(name='files', type='file', multiple)
+
+
+block plugins-js
+    script(src='/plugins/dropzone/dropzone.js')
+
+    script
+        include js/bin/index.min.js

@@ -1,0 +1,201 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/select2/css/select2.min.css', rel='stylesheet')
+
+block content
+    .container-fluid
+        // Basic Examples
+        .row.clearfix
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | SƠ YẾU LÝ LỊCH
+                        small
+                            | Dùng cho các hoạt động tại Khoa Khoa học và Kỹ thuật Máy tính
+                        if (redirect)
+                            .col-sm-1.pull-right
+                                a.btn.btn-warning.btn-flat.waves-effect.waves-light(href=redirect)
+                                    i.material-icons keyboard_backspace
+                    .body
+                        form(action=(session.role == 1 || session.role == 5 || session.id == info.id) ? '/cv/update' : 'javscript:void(0)', method='post')
+                            .row.clearfix
+                                .col-sm-4
+                                    .form-group
+                                        .form-line
+                                            p
+                                                b Mã số sinh viên/ Mã số cán bộ
+                                            input.form-control(type='text', readonly= true , name='id', value=info.id)
+                                .col-sm-5
+                                    .form-group
+                                        .form-line
+                                            p
+                                                b Họ và tên lót
+                                            input.form-control(type='text', name='name[familyName]', placeholder='Họ và tên lót', value=info.name.familyName)
+                                .col-sm-3
+                                    .form-group
+                                        .form-line
+                                            p
+                                                b Tên
+                                            input.form-control(type='text', name='name[givenName]', placeholder='Tên của bạn', value=info.name.givenName)
+                            .row.clearfix
+                                .col-sm-4
+                                    b Ngày, tháng, năm sinh
+                                    .input-group
+                                        .form-line
+                                            if (info.details.birthday !== undefined)
+                                                input.form-control.date(type='text', name='details[birthday]', placeholder='Ví dụ: Ngày 01/01/1995', value=(moment(info.details.birthday).format('DD/MM/YYYY')))
+                                            else
+                                                input.form-control.date(type='text', name='details[birthday]', placeholder='Ví dụ: Ngày 01/01/1995', value=(moment().format('DD/MM/YYYY')))
+                                .col-sm-4
+                                    b Giới tính
+                                    .input-group
+                                        select.form-control.show-tick(name='details[gender]')
+                                            if (info.details.gender === undefined || info.details.gender == true)
+                                                option(value=1, selected=true) Nam
+                                                option(value=0) Nữ
+                                            else if (info.details.gender == false)
+                                                option(value=1) Nam
+                                                option(value=0, selected=true) Nữ
+
+
+                                #birthplace.dvhcvn
+                                    .col-sm-4
+                                        b Nơi sinh/ quê quán (cấp tỉnh hiện nay)
+                                        .input-group
+                                            select.form-control.province(name='details[birthplace]')
+                            .row.clearfix
+                                .col-sm-4
+                                    b Khóa học
+                                    .input-group
+                                        .form-line
+                                            input.form-control(name='details[grade]', type='number', placeholder='Khóa học', value=(info.details.grade !== undefined ? '20' + info.details.grade : ''))
+                                            //input.hidden(type='text', name='details[grade]', value=info.details.grade, readonly=true)
+                                .col-sm-4
+                                    b Chuyên ngành đào tạo
+                                    .input-group
+                                        select.form-control(name='details[major]')
+                                            if (!info.details.major || info.details.major == 0)
+                                                option(value=0, selected) Chưa phân ngành/ chưa cập nhật
+                                            else
+                                                option(value=0) Chưa phân ngành/ chưa cập nhật
+                                            if (info.details.major == 1)
+                                                option(value=1, selected) Khoa học Máy tính
+                                            else
+                                                option(value=1) Khoa học Máy tính
+                                            if (info.details.major == 2)
+                                                option(value=2, selected) Kỹ thuật Máy tính
+                                            else
+                                                option(value=2) Kỹ thuật Máy tính
+
+                                .col-sm-4
+                                    b Lớp sinh hoạt
+                                    .input-group
+                                        .form-line
+                                            input.form-control(name='details[class]', type='text', placeholder='Lớp sinh hoạt', value=(info.details.class !== undefined ? info.details.class : 'Chưa cập nhật'))
+                                            //input.hidden(type='text', name='details[class]', value=info.details.class, readonly=true)
+                            .row.clearfix
+                                .col-sm-3
+                                    b Dân tộc
+                                    .input-group
+                                        .form-line
+                                            input.form-control(type='text', placeholder='Dân tộc', value=info.details.ethnicity, name='details[ethnicity]')
+                                .col-sm-3
+                                    b Tôn giáo
+                                    .input-group
+                                        .form-line
+                                            input.form-control(type='text', placeholder='Tôn giáo', value=info.details.religion, name='details[religion]')
+                                .col-sm-3
+                                    b Email cá nhân (ngoài email trường)
+                                    .input-group
+                                        .form-line
+                                            input.form-control(type='text', placeholder='Email cá nhân', value=info.details.email, name='details[email]')
+                                .col-sm-3
+                                    b Số điện thoại
+                                    .input-group
+                                        .form-line
+                                            input.form-control(type='text', placeholder='Số điện thoại', value=info.details.phone, name='details[phone]')
+
+                            .row.clearfix
+                                .col-sm-3
+                                    b Địa chỉ thường trú
+                                    .input-group
+                                        .form-line
+                                            input.form-control(type='text', placeholder='Địa chỉ thường trú (ghi số nhà/ thôn/ khóm/ làng/ bản và các cấp hành chính tương đương', name='details[permanentAddress][details]', value=info.details.permanentAddress ? info.details.permanentAddress.details : "")
+                                #permanentAddress.dvhcvn
+                                    .col-sm-3.col-md-3
+                                        b Cấp xã/ tương đương
+                                        .input-group
+                                            select.form-control.commune(name='details[permanentAddress][communeId]')
+                                    .col-sm-3.col-md-3
+                                        b Cấp huyện/ tương đương
+                                        .input-group
+                                            select.form-control.district
+
+                                    .col-sm-3.col-md-3
+                                        b Tỉnh/ thành phố
+                                        .input-group
+                                            select.form-control.province
+
+
+                            .row.clearfix
+                                .col-sm-3
+                                    b Nơi ở hiện tại
+                                    .input-group
+                                        .form-line
+                                            input.form-control(type='text', placeholder='Địa chỉ thường trú (ghi số nhà/ thôn/ khóm/ làng/ bản và các cấp hành chính tương đương', name='details[temporaryAddress][details]', value=info.details.temporaryAddress ? info.details.temporaryAddress.details : "")
+                                #temporaryAddress.dvhcvn
+                                    .col-sm-3.col-md-3
+                                        b Cấp xã/ tương đương
+                                        .input-group
+                                            select.form-control.commune(name='details[temporaryAddress][communeId]')
+                                    .col-sm-3.col-md-3
+                                        b Cấp huyện/ tương đương
+                                        .input-group
+                                            select.form-control.district
+
+                                    .col-sm-3.col-md-3
+                                        b Tỉnh/ thành phố
+                                        .input-group
+                                            select.form-control.province
+
+                            .row.clearfix
+                                .col-sm-4
+                                    b Số Chứng minh nhân dân
+                                    .input-group
+                                        .form-line
+                                            input.form-control(type='text', name='details[identityCard][id]', placeholder='Số CMND', value=info.details.identityCard ? info.details.identityCard.id : "")
+                                .col-sm-4
+                                    b Ngày cấp CMND
+                                    .input-group
+                                        .form-line
+                                            input.form-control.date(type='text', name='details[identityCard][date]', placeholder='Ngày cấp CMND', value=info.details.identityCard ? (moment(info.details.identityCard.date).format('DD/MM/YYYY')) :  (moment().format('DD/MM/YYYY')))
+                                #idCardPlace.dvhcvn
+                                    .col-sm-4
+                                        b Nơi cấp CMND
+                                        .input-group
+                                            select.form-control(name='details[identityCard][place]', ).province
+                        
+                            .row.clearfix
+                                .col-sm-4
+                                .col-sm-4
+                                    button.btn.btn-primary.waves-effect(type='submit', style='width: 100%') CẬP NHẬT THÔNG TIN
+
+    input#myInfo.hidden(value=JSON.stringify(info))
+
+
+
+block plugins-js
+    script(src='/plugins/jquery-inputmask/jquery.inputmask.bundle.js')
+    script(src='/plugins/select2/js/select2.full.min.js')
+    script(src='/plugins/select2/js/i18n/vi.js')
+
+    script(src='/plugins/donvihanhchinhvietnam/data/communes.js')
+    script(src='/plugins/donvihanhchinhvietnam/data/districts.js')
+    script(src='/plugins/donvihanhchinhvietnam/data/provinces.js')
+    script(src='/plugins/donvihanhchinhvietnam/donvihanhchinhvietnam.js')
+    style
+        include sass/bin/main.min.css
+    script
+        include js/bin/index.min.js

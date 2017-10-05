@@ -1,0 +1,75 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.dataTables.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.dataTables.min.css")
+
+block content
+    .container-fluid
+        .block-header
+        .row
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | TÓM TẮT TÌNH TRẠNG PHÁT HÀNH CỦA BẢN TIN
+                    .body
+                        table#newsTable.table.table-bordered.table-responsive.table-striped
+                            thead
+                                th.text-center.middle-vertical STT
+                                th.text-center.middle-vertical Tiêu đề
+                                th.text-center.middle-vertical Chuyên mục
+                                th.text-center.middle-vertical Ngày tạo
+                                //th.text-center.middle-vertical Người đăng
+                                th.text-center.middle-vertical Tin nóng
+                                th.text-center.middle-vertical Phát hành
+                                th.text-center.middle-vertical Sửa chữa
+
+                            tbody
+                                each val, index in news
+                                    tr
+                                        td.text-center.middle-vertical= index + 1
+                                        td
+                                            a(href='/tin-tuc/' + val.created.getTime())=val.title.tonal
+                                        if(val.categories == "0")
+                                            td.text-center.middle-vertical Mặc định
+                                        else
+                                            -var categories = config.newsType.find(x=> x._id.toString() == val.categories)
+                                            if(categories)
+                                                td.text-center.middle-vertical=categories.name
+                                            else
+                                                td.text-center.middle-vertical
+
+                                        td.text-center.middle-vertical= moment(val.created).fromNow()
+                                        //td.text-center.middle-vertical= val.creator.name.familyName + ' ' + val.creator.name.givenName
+                                        td.text-center.middle-vertical
+                                            if(val.isHot)
+                                                button.toggleHot.btn.btn-sm.btn-primary.waves-effect.waves-light(type='button', data-id=val._id)
+                                                    i.material-icons.tiny check
+                                            else
+                                                button.toggleHot.btn.btn-sm.btn-danger.waves-effect.waves-light(type='button', data-id=val._id)
+                                                    i.material-icons.tiny close
+                                        td.text-center.middle-vertical
+                                            if(val.published)
+                                                button.togglePublish.btn.btn-sm.btn-primary.waves-effect.waves-light(type='button', data-id=val._id)
+                                                    i.material-icons.tiny check
+                                            else
+                                                button.togglePublish.btn.btn-sm.btn-danger.waves-effect.waves-light(type='button', data-id=val._id)
+                                                    i.material-icons.tiny close
+                                        td.text-center.middle-vertical
+                                            a.btn.btn-sm.btn-warning.waves-effect.waves-light(href='/admin/tin-tuc/chinh-sua/id=' + val._id)
+                                                i.material-icons edit
+
+block plugins-js
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Buttons/js/dataTables.buttons.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Select/js/dataTables.select.min.js")
+    script(src='/plugins/bootstrap-notify/bootstrap-notify.min.js')
+    style
+        include sass/bin/main.min.css
+    script
+        include js/bin/index.min.js

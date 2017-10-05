@@ -1,0 +1,45 @@
+li.header CÁC CHỨC NĂNG QUẢN LÝ
+    li
+        a.menu-toggle(href='javascript:void(0)')
+            i.material-icons assignment_ind
+            span Quản lý thông tin sinh viên
+        ul.ml-menu
+            li
+                a(href='/admin/info/view')
+                    span Xem thông tin
+    li
+        a.menu-toggle(href='javascript:void(0)')
+            i.material-icons photo_library
+            span Quản lý kho hình ảnh
+        ul.ml-menu
+            li
+                a(href='/admin/gallery/view')
+                    span Xem kho ảnh
+            li
+                a(href='/admin/gallery/upload')
+                    span Tải ảnh mới
+            li
+                a(href='/admin/gallery/publish')
+                    span Điều chỉnh tình trạng phát hành
+    li
+        a.menu-toggle(href='javascript:void(0)')
+            i.material-icons event_note
+            span Quản lý bài viết
+        ul.ml-menu
+            li
+                a(href='/admin/news/upload')
+                    span Đăng bài viết mới
+            li
+                a(href='/admin/news/publish')
+                    span Điều chỉnh tình trạng phát hành
+    li
+        a.menu-toggle(href='javascript:void(0)')
+            i.material-icons work
+            span Quản lý hoạt động
+        ul.ml-menu
+            li
+                a(href='/admin/activity/create')
+                    span Tạo hoạt động mới
+            li
+                a(href='/admin/activity/publish')
+                    span Kiểm soát hoạt động

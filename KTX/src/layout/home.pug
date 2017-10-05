@@ -1,0 +1,117 @@
+doctype html
+html(lang='vi', dir='ltr')
+    meta(http-equiv='content-type', content='text/html;charset=utf-8')
+    head
+        title= pageTitle
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+
+        link(rel='stylesheet', href='/plugins/bootstrap/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/plugins/bootstrap/css/bootstrap-theme.min.css')
+        link(rel='stylesheet', href='/plugins/font-awesome/css/font-awesome.min.css')
+
+
+        style
+            include sass/bin/home.min.css
+        block plugins-css
+        script(type='text/javascript', src='/plugins/jquery/jquery.min.js')
+        script(type='text/javascript', src='/plugins/bootstrap/js/bootstrap.min.js')
+
+        script
+            include js/bin/home.min.js
+        block plugins-js
+
+    body.html.front.not-logged-in.no-sidebars.page-node.i18n-vi.borders
+        header
+            .container.top-header
+                .container-fluid
+                    .row.clearfix
+                        .col-md-12.col-xs-12.logo
+                            .row.row-eq-height
+                                .col-md-2.logo-image.p-l-5.p-r-5.hidden-sm.hidden-xs
+                                    img.img-responsive(src='/media/img/bk.png')
+                                .col-md-10.logo-content.hidden-sm.hidden-xs
+                                    p.font-20.font-bold.margin-0 ĐẠI HỌC QUỐC GIA TP.HỒ CHÍ MINH - TRƯỜNG ĐẠI HỌC BÁCH KHOA
+                                    br
+                                    p.margin-0.font-20 KÝ TÚC XÁ BÁCH KHOA
+                                .col-sm-2.logo-image.visible-sm
+                                    img.img-responsive(src='/media/img/bk.png')
+                                .col-sm-10.logo-content.visible-sm
+                                    p.font-16.font-bold.margin-0 ĐẠI HỌC QUỐC GIA TP.HỒ CHÍ MINH - TRƯỜNG ĐẠI HỌC BÁCH KHOA
+                                    p.margin-0.font-14 KÝ TÚC XÁ BÁCH KHOA
+                                .col-xs-3.logo-image.visible-xs
+                                    img.img-responsive(src='/media/img/bk.png')
+                                .col-xs-9.logo-content.visible-xs
+                                    p.font-12.font-bold.margin-0 ĐẠI HỌC QUỐC GIA TP.HỒ CHÍ MINH - TRƯỜNG ĐẠI HỌC BÁCH KHOA
+                                    p.margin-0.font-12 KÝ TÚC XÁ BÁCH KHOA
+                      
+
+            .container.bottom-header.padding-0.m-t-15
+                .container-fluid
+                    .row.clearix
+                        nav#cssmenu
+                            #head-mobile
+                            .button
+                            ul
+                                li
+                                    a(href='/')
+                                        i.fa.fa-home(aria-hidden='true')
+                                        |  Trang chủ
+                                block menu
+                                if(config)
+                                    each menu in config.menu
+                                        li
+                                            a(href=menu.link)= menu.name
+                                            if(menu.child.length != 0)
+                                                ul
+                                                    each child in menu.child
+                                                        li
+                                                            a(href=child.link)= child.name
+
+                                li.signin.pull-right
+                                    a(href="/dashboard") Đăng nhập
+
+
+        section.content
+            block content
+        footer.align-center.p-t-20.p-b-20
+            .container-fluid.p-l-35
+                .row.row-eq-height
+                    .col-md-2.col-sm-3.governing-logo.hidden-xs
+                        img.img-responsive(src='/media/img/bk.png', style='max-width:130px')
+                    .col-md-5.col-sm-5.align-justify.p-t-10.p-b-5.governing-name.hidden-xs
+                        b.font-16 ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH
+                        p.font-16.margin-0 TRƯỜNG ĐẠI HỌC BÁCH KHOA
+                        p.font-16 KÝ TÚC XÁ BÁCH KHOA
+                        p.font-13
+                            | Bản quyền thuộc về
+                            span.p-l-5
+                                a(href="#") BKAN Team
+                    .col-md-5.col-sm-4.align-justify.p-t-10.p-b-5.governing-details.hidden-xs
+                        p.font-15.margin-0
+                            b Địa chỉ:
+                            span.p-l-5 497 Hòa Hảo phường 7, quận 10, Tp. Hồ Chí Minh
+                        p.font-15.margin-0
+                            b Số điện thoại:
+                            span.p-l-5 (08) 395 73946
+                        p.font-15.margin-0
+                            b Số Fax:
+                            span.p-l-5 (08) 395 73946
+                    //- .col-xs-3.visible-xs.pem(style='border-right: solid 2px white')
+                    //-   img.img-responsive(src='/media/img/bk.png', style='max-width:130px')
+                    .col-xs-12.visible-xs(style='text-align:left')
+                      b.font-13 ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH
+                      p.font-13.margin-0 TRƯỜNG ĐẠI HỌC BÁCH KHOA
+                      p.font-13 KÝ TÚC XÁ BÁCH KHOA
+                      hr
+                      p.font-13.margin-0
+                          b Địa chỉ:
+                          span.p-l-5 497 Hòa Hảo phường 7, quận 10, Tp. Hồ Chí Minh
+                      p.font-13.margin-0
+                          b Số điện thoại:
+                          span.p-l-5 (08) 395 73946
+                      p.font-13.margin-0
+                          b Số Fax:
+                          span.p-l-5 (08) 395 73946
+                      
+                      

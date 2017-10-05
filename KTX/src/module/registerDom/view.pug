@@ -1,0 +1,15 @@
+extends ../../layout/home
+block plugins-js
+    script(type='text/javascript', src='/plugins/bootpag/bootpag.js')
+
+block content
+    if(accpeted)
+        p= "Đăng ký cho học kỳ" + configRegister.semester.value + " năm học " + configRegister.semester.year
+    else
+        p đã hết đợt đăng ký
+
+
+    style(type="text/css")
+        include sass/bin/main.min.css
+    script
+        include js/bin/index.min.js

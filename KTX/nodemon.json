@@ -1,0 +1,7 @@
+{
+  "ignore": [
+    "public/",
+    "src/layout/",
+    "src/module/*/js/"
+  ]
+}

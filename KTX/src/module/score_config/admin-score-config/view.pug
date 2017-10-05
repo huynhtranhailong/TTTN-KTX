@@ -1,0 +1,76 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/bootstrap-select/css/bootstrap-select.css', rel='stylesheet')
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href='/plugins/jquery-confirm/css/jquery-confirm.css')
+    link(rel='stylesheet', href='/plugins/treegrid/css/jquery.treegrid.css')
+    link(rel='stylesheet', href='/plugins/select2/css/select2.min.css')
+    link(rel='stylesheet', href='/plugins/jquery-ui/jquery-ui.min.css')
+    style
+        include sass/bin/main.min.css
+
+block content
+    .container-fluid
+        // Basic Examples
+        .row.clearfix
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | CẤU HÌNH TIÊU CHÍ ĐIỂM RÈN LUYỆN
+                    .body
+                        .row.clearfix
+                            .col-sm-12
+                                table.tree.col-sm-12
+                                    tr.treegrid-1.expanded
+                                        td(width="50%").middle-vertical
+                                            b Tiêu chí điểm rèn luyện
+                                        td.middle-vertical
+                                            a(onclick='addCriteria("' + currentConfig._id + '")')
+                                                i.material-icons add_box
+                                    if(currentConfig.scoreConfig.length != 0)
+                                        -var length = 0
+                                        each criteria, index in currentConfig.scoreConfig
+                                            -var className = 'treegrid-' + (length+2).toString() + ' treegrid-parent-1'
+                                            tr.expanded(class= className)
+                                                td.middle-vertical= criteria.name
+                                                td.middle-vertical
+                                                    a(onclick='addSubCriteria("' + currentConfig._id + '","' + criteria._id + '")')
+                                                        i.material-icons add_box
+                                                    a(onclick='editCriteria("' + currentConfig._id + '","' + criteria._id + '","' + criteria.name + '","' + criteria.scoreMin + '","' + criteria.scoreMax +'")')
+                                                        i.material-icons mode_edit
+                                                    a(onclick='deleteCriteria("' + currentConfig._id + '","' + criteria._id + '","' + criteria.name + '")')
+                                                        i.material-icons delete
+                                            each subCriteria, indexChild in criteria.child
+                                                -var classChild = 'treegrid-' + (length + indexChild+2+1).toString() + ' treegrid-parent-' + (length+2).toString()
+                                                tr(class= classChild)
+                                                    td.middle-vertical= subCriteria.name
+                                                    td.middle-vertical
+                                                        a(style='visibility: hidden')
+                                                            i.material-icons add_box
+                                                        a(onclick='editSubCriteria("' + currentConfig._id + '","' + criteria._id + '","' + subCriteria._id + '","' + subCriteria.name + '","' + subCriteria.scoreMin + '","' + subCriteria.scoreMax +'")')
+                                                            i.material-icons mode_edit
+                                                        a(onclick='deleteSubCriteria("' + currentConfig._id + '","' + criteria._id + '","' + subCriteria._id + '","' + subCriteria.name + '")')
+                                                            i.material-icons delete
+                                            - length = length + criteria.child.length + 1
+
+
+
+block plugins-js
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src='/plugins/jquery-dataTables-rowsGroup/js/jquery-dataTables-rowsGroup.js')
+    script(src='/plugins/bootstrap-select/js/bootstrap-select.js')
+    script(src='/plugins/jquery-inputmask/jquery.inputmask.bundle.js')
+    script(src='/plugins/jquery-confirm/js/jquery-confirm.js')
+    script(src='/plugins/treegrid/js/jquery.treegrid.js')
+    script(src='/plugins/select2/js/select2.min.js')
+    script(src='/plugins/jquery-ui/jquery-ui.js')
+
+
+
+
+
+    script
+        include js/bin/index.min.js

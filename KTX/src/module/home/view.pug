@@ -1,0 +1,51 @@
+extends ../../layout/home
+include mixin
+block plugins-css
+    link(rel='stylesheet', type='text/css', href='plugins/slick/slick.css')
+    link(rel='stylesheet', type='text/css', href='plugins/slick/slick-theme.css')
+block plugins-js
+    script(type='text/javascript', src='plugins/slick/slick.min.js')
+
+block menu
+
+block content
+    .container
+        .single-item
+            -var hotNews = news.filter(x=> x.isHot == true && x.published == true)
+            -var hot = hotNews
+            -var hotNewsLength = hotNews.length
+            if(hotNewsLength > 0)
+                if(hotNewsLength >= 5)
+                    -hot = hotNews.slice(0,5)
+                else
+                    -hot = hotNews.slice(0,hotNewsLength)
+                each value in hot
+                    .align-center.col-xs-12
+                        a(href='/tin-tuc/' + value.created.getTime() +"")
+                            img.img-responsive(src='/document/image/cover/' + value.cover)
+
+
+
+    .container
+        .container-fluid
+            .row.clearfix
+                if(config)
+                    .col-sm-10.padding-0
+                        .news-contain
+                            each value in config.newsType.filter(x => x.published == true)
+                                +categories(value._id, value.name, value.id, news)
+
+                    .col-sm-2
+                        .advertise-contain.hidden-xs.hidden-sm
+                            .links-title
+                                | Trang liên kết:
+                            each site in config.linkedSite.filter(x=> x.published ==  true)
+                                .links-review
+                                    a(href=site.link)
+                                        img.img-responsive(src='/document/image/'+ site.img)
+                                        p= site.content
+
+    style(type="text/css")
+        include sass/bin/main.min.css
+    script
+        include js/bin/index.min.js

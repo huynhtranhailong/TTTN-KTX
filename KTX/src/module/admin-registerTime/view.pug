@@ -1,0 +1,122 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/bootstrap-select/css/bootstrap-select.css', rel='stylesheet')
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href='/plugins/jquery-confirm/css/jquery-confirm.css')
+    link(rel='stylesheet', href='/plugins/select2/css/select2.min.css')
+
+
+
+    style
+        include sass/bin/main.min.css
+
+block content
+    .container-fluid
+        // Basic Examples
+        .row.clearfix
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .card
+                    .header
+                        h2
+                            | MỞ ĐỢT ĐĂNG KÝ HOẶC GIA HẠN LƯU TRÚ
+                    .body
+                        .row.clearfix
+                            .col-sm-5
+                                h5 MỞ ĐỢT ĐĂNG KÍ/ GIA HẠN
+                                form(action="/admin/config/openRegisterTime" method="post")
+                                    .col-sm-12
+                                        if(error)
+                                            p.col-red= error
+                                        .form-group
+                                            b Chọn học kỳ
+                                            select.form-control.show-tick(name='semester')
+                                                if(currentConfig)
+                                                    option(value= currentConfig.semester.year+ '-' + currentConfig.semester.value )= 'Học kỳ ' + currentConfig.semester.value + ' năm ' + currentConfig.semester.year + '-' + (parseInt(currentConfig.semester.year) + 1)
+                                                each semester in configsCanCreate
+                                                    option(value= semester.semester.year+ '-' + semester.semester.value )= 'Học kỳ ' + semester.semester.value + ' năm ' + semester.semester.year + '-' + (parseInt(semester.semester.year) + 1)
+
+                                    .col-md-6
+                                        .form-group
+                                            b Ngày bắt đầu
+                                            .form-line
+                                                input.form-control.date(required=true, type='text', placeholder='DD/MM/YYYY', name='startDay')
+                                    .col-md-6
+                                        .form-group
+                                            b Giờ bắt đầu
+                                            .form-line
+                                                input.form-control.time24(required=true, type='text', placeholder='HH:MM', name='startTime')
+                                    .col-md-6
+                                        .form-group
+                                            b Ngày kết thúc
+                                            .form-line
+                                                input.form-control.date(required=true, type='text', placeholder='DD/MM/YYYY', name='endDay')
+                                    .col-md-6
+                                        .form-group
+                                            b Giờ kết thúc
+                                            .form-line
+                                                input.form-control.time24(required=true, type='text', placeholder='HH:MM', name='endTime')
+                                    .col-md-12
+                                        textarea#ckeditor(name='description', required=true)
+
+
+                                    button.col-md-4.col-md-push-4.btn.btn-info.waves-effect.waves-light(type='submit') TẠO MỚI
+                            .col-sm-7
+                                h5 DANH SÁCH CÁC ĐỢT ĐĂNG KÍ /GIA HẠN ĐÃ MỞ
+                                if(errorUpdate)
+                                    p.col-red= errorUpdate
+                                table.table.table-bordered
+                                    thead
+                                        tr
+                                            th(rowspan=2).text-center.middle-vertical STT
+                                            th(rowspan=2).text-center.middle-vertical Học kỳ
+                                            th(rowspan=2).text-center.middle-vertical Đợt
+                                            th(colspan=2).text-center.middle-vertical Thời Gian
+                                            th(rowspan=2).text-center.middle-vertical Điều chỉnh
+                                        tr
+                                            th.text-center Bắt đầu
+                                            th.text-center Kết thúc
+
+                                    tbody
+                                            -var configsOpened = configs.filter(x=>x.registerTime.length != 0)
+                                            -totalRow = 0
+                                            each config in configsOpened
+                                                each registerTime, index in config.registerTime
+                                                    tr
+                                                        td.text-center.middle-vertical=  totalRow  + index + 1
+                                                        if(index == 0)
+                                                            td(rowspan= config.registerTime.length).text-center.middle-vertical= "Học kỳ " + config.semester.value + " (" +config.semester.year + '-' + (parseInt(config.semester.year) +1).toString() + ")"
+                                                        //td.text-center.middle-vertical= config.semester.year + '-' + (parseInt(config.semester.year) +1).toString()
+                                                        td.text-center.middle-vertical= config.registerTime.length - index
+                                                        if(moment(registerTime.startDate) < moment() && moment(registerTime.endDate) > moment())
+                                                            td.text-center.middle-vertical.col-red= moment(registerTime.startDate).format('DD/MM/YYYY HH:mm')
+                                                            td.text-center.middle-vertical.col-red= moment(registerTime.endDate).format('DD/MM/YYYY HH:mm')
+
+                                                        else
+                                                            td.text-center.middle-vertical= moment(registerTime.startDate).format('DD/MM/YYYY HH:mm')
+                                                            td.text-center.middle-vertical= moment(registerTime.endDate).format('DD/MM/YYYY HH:mm')
+                                                        td.text-center.middle-vertical
+                                                            button.btn.btn-sm.btn-primary.waves-effect.waves-light(onclick='editDate("' + config._id+ '","' + registerTime._id + '","' + moment(registerTime.startDate).format('DD/MM/YYYY') + '","' + moment(registerTime.endDate).format('DD/MM/YYYY')  + '","' + moment(registerTime.startDate).format('HH:mm') + '","' + moment(registerTime.endDate).format('HH:mm') + '","' + config.semester.year + '","' + config.semester.value + '","' + (config.registerTime.length - index) +'")')
+                                                                i.material-icons edit
+                                                            button.btn.btn-sm.btn-danger.waves-effect.waves-light(onclick='del("' + config._id +'","' + registerTime._id + '","' + config.semester.year + '","' + config.semester.value + '","' + (config.registerTime.length - index) +'")')
+                                                                i.material-icons delete
+                                                -totalRow = totalRow + config.registerTime.length
+
+
+
+
+
+
+
+
+block plugins-js
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src='/plugins/bootstrap-select/js/bootstrap-select.js')
+    script(src='/plugins/jquery-inputmask/jquery.inputmask.bundle.js')
+    script(src='/plugins/jquery-confirm/js/jquery-confirm.js')
+    script(src='/plugins/select2/js/select2.min.js')
+    script(src='/plugins/ckeditor/ckeditor.js')
+
+    script
+        include js/bin/index.min.js

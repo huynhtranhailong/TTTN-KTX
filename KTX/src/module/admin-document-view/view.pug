@@ -1,0 +1,85 @@
+extends ../../layout/dashboard
+
+block plugins-css
+    link(href='/plugins/light-gallery/css/lightgallery.css', rel='stylesheet')
+    link(href='/plugins/dropzone/dropzone.css', rel='stylesheet')
+    link(rel='stylesheet', href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Buttons/css/buttons.dataTables.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.bootstrap.min.css")
+    link(rel='stylesheet', href="/plugins/jquery-datatable/extensions/Select/css/select.dataTables.min.css")
+    link(rel='stylesheet', href='/plugins/sweetalert/themes/google/google.css')
+    link(rel='stylesheet', href='/plugins/sweetalert/sweetalert.css')
+
+block content
+    .container-fluid
+        // Image Gallery
+        .block-header
+        .row
+            .nav-tabs-custom
+                ul.nav.nav-tabs
+                    li.active
+                        a(href='#images', data-toggle='tab' , style=" font-size: large;") Kho Hình ảnh
+                    li
+                        a(href='#files', data-toggle='tab', style=" font-size: large;") Kho Tập Tin
+
+                .tab-content
+                    #images.active.tab-pane
+                        -var images = documents.filter( x=> x.type == 'image')
+                        .row
+                            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                                .card
+                                    .body
+                                        .row
+                                            #aniimated-thumbnials.list-unstyled.row.clearfix
+                                                each val, index in images.filter(x => x.published === true)
+                                                    .col-lg-3.col-md-4.col-sm-6.col-xs-12
+                                                        a(href= "/document/image/" + val.name , data-sub-html=val.name)
+                                                            img.img-responsive.thumbnail(src= "/document/image/" + val.name )
+
+                    #files.tab-pane
+                        -var dataFile = documents.filter( x=> x.type != 'image')
+                        .row
+                            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                                .card
+                                    .body
+                                        .row
+                                            table.table.table-responsive.table-striped.table-bordered
+                                                thead
+                                                    tr
+                                                        th.text-center TT
+                                                        th.text-center Tên file
+                                                        th.text-center Người đăng
+                                                tbody
+                                                    each value, index in dataFile
+                                                        tr
+                                                            td.text-center.middle-vertical= index + 1
+                                                            td.text-center.middle-vertical
+                                                                a(href="/admin/document/downloadFile/" + value.name+'/' + value.originalname) #{value.originalname}
+                                                            td.text-center.middle-vertical= (value.creator.name.familyName == undefined? value.creator.name.familyName : "") + " " + (value.creator.name.givenName == undefined? value.creator.name.givenName : "")
+
+
+
+
+
+
+
+
+
+
+block plugins-js
+    script(src='/plugins/light-gallery/js/lightgallery-all.js')
+    script(src="/plugins/jquery-datatable/jquery.dataTables.js")
+    script(src="/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Buttons/js/dataTables.buttons.min.js")
+    script(src="/plugins/jquery-datatable/extensions/Select/js/dataTables.select.min.js")
+    script(src='/plugins/bootstrap-notify/bootstrap-notify.min.js')
+    script(src='/plugins/sweetalert/sweetalert.min.js')
+
+    // Custom Js
+    script(src='/js/lib/dashboard/pages/medias/image-gallery.js')
+
+    style
+        include sass/bin/main.min.css
+    script
+        include js/bin/index.min.js
